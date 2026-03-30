@@ -11,15 +11,15 @@ namespace TherapyCenter.Data
 
         }
 
-        DbSet<User> Users { get; set; }
-        DbSet<Patient> Patients { get; set; }
-        DbSet<Therapy> Therapies { get; set; }
-        DbSet<Doctor> Doctors { get; set; }
-        DbSet<Appointment> Appointments { get; set; }
-        DbSet<DoctorFinding> DoctorFindings { get; set; }
+       public DbSet<User> Users { get; set; }
+       public DbSet<Patient> Patients { get; set; }
+       public DbSet<Therapy> Therapies { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+       public DbSet<DoctorFinding> DoctorFindings { get; set; }
 
-        DbSet<Payment> Payments { get; set; }
-        DbSet<Slot> Slots { get; set; }
+       public DbSet<Payment> Payments { get; set; }
+        public DbSet<Slot> Slots { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

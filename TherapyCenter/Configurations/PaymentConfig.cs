@@ -8,6 +8,15 @@ namespace TherapyCenter.Configurations
     {
         public void Configure(EntityTypeBuilder<Payment> builder)
         {
+            builder.HasKey(p => p.PaymentId);
+
+            builder.HasOne(p => p.Appointment)
+                .WithOne(a => a.Payment)
+                .HasForeignKey<Payment>(p => p.AppointmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+                
 
         }
     }
