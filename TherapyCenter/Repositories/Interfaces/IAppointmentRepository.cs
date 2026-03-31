@@ -6,8 +6,8 @@ namespace TherapyCenter.Repositories.Interfaces
     {
 
         Task<Appointment> GetByIdAsync(int id);
-        Task<Appointment> GetByPatientId(int patientId);
-        Task<Appointment> GetByDoctorId(int doctorId);
+        Task<List<Appointment>> GetByPatientId(int patientId);
+        Task<List<Appointment>> GetByDoctorId(int doctorId);
 
         Task AddAsync(Appointment appointment);
         Task UpdateAsync(Appointment appointment);
