@@ -6,7 +6,7 @@ namespace TherapyCenter.Repositories.Interfaces
     {
 
         Task<List<DoctorFinding>> GetByPatientIdAsync(int PatientId);
-        Task<DoctorFinding> GetByAppointmentId(int appointmentId);
+        Task<List<DoctorFinding>> GetByAppointmentId(int appointmentId);
 
         Task AddAsync(DoctorFinding doctorFinding);
 

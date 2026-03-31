@@ -20,9 +20,9 @@ namespace TherapyCenter.Repositories.Implementation
                 .Where(x => x.Appointment.PatientId == patientId)
                 .ToListAsync();
 
-        public async Task<DoctorFinding> GetByAppointmentId(int appointmentId)
+        public async Task<List<DoctorFinding>> GetByAppointmentId(int appointmentId)
             => await _context.DoctorFindings
-                .FirstOrDefaultAsync(x => x.AppointmentId == appointmentId);
+                .Where(x => x.AppointmentId == appointmentId).ToListAsync();
 
         public async Task AddAsync(DoctorFinding finding)
         {
