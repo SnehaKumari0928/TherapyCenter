@@ -45,13 +45,13 @@ namespace TherapyCenter2.Services.Implementations
 
             var createdDoctor = await _doctorRepository.AddAsync(doctor);
 
-            return Map(createdDoctor, createdUser);
+            return MapDoctorResponse(createdDoctor, createdUser);
         }
 
         public async Task<List<DoctorResponseDto>> GetAllDoctorsAsync()
         {
             var doctors = await _doctorRepository.GetAllAsync();
-            return doctors.Select(d => Map(d, d.User)).ToList();
+            return doctors.Select(d => MapDoctorResponse(d, d.User)).ToList();
         }
 
         public async Task<DoctorResponseDto> GetDoctorByIdAsync(int id)
@@ -61,7 +61,7 @@ namespace TherapyCenter2.Services.Implementations
             if (doctor == null)
                 throw new Exception("Doctor not found");
 
-            return Map(doctor, doctor.User);
+            return MapDoctorResponse(doctor, doctor.User);
         }
 
         public async Task<DoctorResponseDto> UpdateDoctorAsync(int id, UpdateDoctorDto dto)
@@ -85,7 +85,7 @@ namespace TherapyCenter2.Services.Implementations
 
             await _doctorRepository.UpdateAsync(doctor);
 
-            return Map(doctor, user);
+            return MapDoctorResponse(doctor, user);
         }
 
         public async Task DeleteDoctorAsync(int id)
@@ -98,7 +98,7 @@ namespace TherapyCenter2.Services.Implementations
             await _doctorRepository.DeleteAsync(doctor);
         }
 
-        private static DoctorResponseDto Map(Doctor doctor, User user)
+        private static DoctorResponseDto MapDoctorResponse(Doctor doctor, User user)
         {
             return new DoctorResponseDto
             {

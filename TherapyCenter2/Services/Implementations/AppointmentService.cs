@@ -46,13 +46,13 @@ namespace TherapyCenter2.Services.Implementations
             slot.IsBooked = true;
             await _slotRepository.UpdateAsync(slot);
 
-            return Map(created);
+            return MapAppointmentResponse(created);
         }
 
         public async Task<List<AppointmentResponseDto>> GetAllAsync()
         {
             var list = await _appointmentRepository.GetAllAsync();
-            return list.Select(Map).ToList();
+            return list.Select(MapAppointmentResponse).ToList();
         }
 
         public async Task<AppointmentResponseDto> GetByIdAsync(int id)
@@ -62,7 +62,7 @@ namespace TherapyCenter2.Services.Implementations
             if (appointment == null)
                 throw new Exception("Appointment not found");
 
-            return Map(appointment);
+            return MapAppointmentResponse(appointment);
         }
 
         public async Task<AppointmentResponseDto> UpdateAsync(int id, AppointmentUpdateDto dto)
@@ -76,7 +76,7 @@ namespace TherapyCenter2.Services.Implementations
 
             await _appointmentRepository.UpdateAsync(appointment);
 
-            return Map(appointment);
+            return MapAppointmentResponse(appointment);
         }
 
         public async Task DeleteAsync(int id)
@@ -113,7 +113,7 @@ namespace TherapyCenter2.Services.Implementations
             await _appointmentRepository.UpdateAsync(appointment);
         }
 
-        private static AppointmentResponseDto Map(Appointment a)
+        private static AppointmentResponseDto MapAppointmentResponse(Appointment a)
         {
             return new AppointmentResponseDto
             {

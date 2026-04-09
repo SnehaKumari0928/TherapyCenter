@@ -28,13 +28,13 @@ namespace TherapyCenter2.Services.Implementations
 
             var created = await _repository.AddAsync(finding);
 
-            return Map(created);
+            return MapDoctorFindingResponse(created);
         }
 
         public async Task<List<DoctorFindingResponseDto>> GetAllAsync()
         {
             var list = await _repository.GetAllAsync();
-            return list.Select(Map).ToList();
+            return list.Select(MapDoctorFindingResponse).ToList();
         }
 
         public async Task<DoctorFindingResponseDto> GetByIdAsync(int id)
@@ -44,13 +44,13 @@ namespace TherapyCenter2.Services.Implementations
             if (finding == null)
                 throw new Exception("Finding not found");
 
-            return Map(finding);
+            return MapDoctorFindingResponse(finding);
         }
 
         public async Task<List<DoctorFindingResponseDto>> GetByAppointmentAsync(int appointmentId)
         {
             var list = await _repository.GetByAppointmentIdAsync(appointmentId);
-            return list.Select(Map).ToList();
+            return list.Select(MapDoctorFindingResponse).ToList();
         }
 
         public async Task<DoctorFindingResponseDto> UpdateAsync(int id, UpdateDoctorFindingDto dto)
@@ -66,7 +66,7 @@ namespace TherapyCenter2.Services.Implementations
 
             await _repository.UpdateAsync(finding);
 
-            return Map(finding);
+            return MapDoctorFindingResponse(finding);
         }
 
         public async Task DeleteAsync(int id)
@@ -79,7 +79,7 @@ namespace TherapyCenter2.Services.Implementations
             await _repository.DeleteAsync(finding);
         }
 
-        private static DoctorFindingResponseDto Map(DoctorFinding f)
+        private static DoctorFindingResponseDto MapDoctorFindingResponse(DoctorFinding f)
         {
             return new DoctorFindingResponseDto
             {
