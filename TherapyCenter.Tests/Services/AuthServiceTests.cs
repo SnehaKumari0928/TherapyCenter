@@ -157,6 +157,41 @@ namespace TherapyCenter.Tests.Services
         }
 
         [Fact]
+        public async Task Login_Should_Return_Null_When_Email_Is_Empty()
+        {
+            var loginDto = new LoginDto { Email = "", Password = "123456" };
+            var result = await _authService.LoginAsync(loginDto);
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task Login_Should_Return_Null_When_Password_Is_Empty()
+        {
+            var loginDto = new LoginDto { Email = "test@example.com", Password = "" };
+            var result = await _authService.LoginAsync(loginDto);
+            result.Should().BeNull();
+        }
+
+       
+        [Fact]
+        public async Task Register_Should_Throw_Exception_When_PhoneNumber_Is_Invalid()
+        {
+            var request = new RegisterDto
+            {
+                FirstName = "Jane",
+                LastName = "Doe",
+                Email = "jane@example.com",
+                Password = "123456",
+                Role = "Doctor",
+                PhoneNumber = "abc123" // invalid
+            };
+
+            Func<Task> act = async () => await _authService.RegisterAsync(request);
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+
+        [Fact]
         public async Task Register_Should_Throw_Exception_When_Role_Is_Invalid()
         {
             var request = new RegisterDto
@@ -175,5 +210,50 @@ namespace TherapyCenter.Tests.Services
             await act.Should().ThrowAsync<Exception>()
                 .WithMessage("Invalid role selection");
         }
+
+        [Fact]
+        public async Task Login_Should_Call_JwtHelper_With_Correct_User()
+        {
+            var loginDto = new LoginDto { Email = "test@example.com", Password = "123456" };
+            var user = new User
+            {
+                UserId = 1,
+                Email = "test@example.com",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
+                Role = "Patient"
+            };
+
+            _userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDto.Email)).ReturnsAsync(user);
+            _jwtHelperMock.Setup(x => x.GenerateToken(It.IsAny<User>())).Returns("token");
+
+            var result = await _authService.LoginAsync(loginDto);
+
+            _jwtHelperMock.Verify(x => x.GenerateToken(user), Times.Once);
+        }
+
+        [Fact]
+public async Task Register_Should_Hash_Password_Before_Saving()
+{
+    var request = new RegisterDto
+    {
+        FirstName = "Alice",
+        LastName = "Smith",
+        Email = "alice@example.com",
+        Password = "plaintextpassword",
+        Role = "Doctor"
+    };
+
+    _userRepositoryMock.Setup(x => x.GetByEmailAsync(request.Email)).ReturnsAsync((User?)null);
+    _userRepositoryMock.Setup(x => x.AddUserAsync(It.IsAny<User>())).ReturnsAsync((User u) => u);
+
+    var result = await _authService.RegisterAsync(request);
+
+    result.Should().NotBeNull();
+    result.Email.Should().Be(request.Email);
+
+    _userRepositoryMock.Verify(x => x.AddUserAsync(It.Is<User>(u =>
+        BCrypt.Net.BCrypt.Verify("plaintextpassword", u.PasswordHash)
+    )), Times.Once);
+}
     }
 }

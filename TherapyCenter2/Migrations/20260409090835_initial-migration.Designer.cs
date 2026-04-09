@@ -12,7 +12,7 @@ using TherapyCenter2.Data;
 namespace TherapyCenter2.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260409003102_initial-migration")]
+    [Migration("20260409090835_initial-migration")]
     partial class initialmigration
     {
         /// <inheritdoc />

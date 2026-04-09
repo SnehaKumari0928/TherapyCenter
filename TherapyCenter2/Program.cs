@@ -39,11 +39,10 @@ namespace TherapyCenter2
 
             var jwtSettings = builder.Configuration
                .GetSection("Jwt")
-               .Get<JwtSettings>() ?? throw new Exception("JWT settings missing");
+               .Get<JwtSettings>() ?? throw new Exception("JWT settings not found");
 
             builder.Services.AddSingleton(jwtSettings);
 
-            builder.Services.AddSingleton(jwtSettings);
 
             var key = Encoding.UTF8.GetBytes(jwtSettings.Key);
 
@@ -76,8 +75,10 @@ namespace TherapyCenter2
             builder.Services.AddScoped<ISlotRepository, SlotRepository>();
             builder.Services.AddScoped<ISlotService, SlotService>();
             builder.Services.AddControllers();
+
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
 
             var app = builder.Build();
 
@@ -86,9 +87,13 @@ namespace TherapyCenter2
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
+                app.UseSwagger(); // generates swagger.json
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                    c.RoutePrefix = string.Empty; // makes Swagger UI at root /
+                });
             }
-
             app.UseHttpsRedirection();
             app.UseAuthentication();
 
