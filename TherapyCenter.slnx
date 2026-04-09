@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="TherapyCenter.Tests/TherapyCenter.Tests.csproj" Id="f097e010-efa5-4180-b2da-1175c6a5911e" />
+  <Project Path="TherapyCenter2/TherapyCenter2.csproj" />
+</Solution>

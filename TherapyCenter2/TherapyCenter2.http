@@ -1,0 +1,6 @@
+@TherapyCenter2_HostAddress = http://localhost:5251
+
+GET {{TherapyCenter2_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
