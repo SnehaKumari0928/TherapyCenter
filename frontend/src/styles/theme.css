@@ -1,0 +1,108 @@
+:root {
+  --emerald: #10b981;
+  --emerald-dark: #059669;
+  --black: #000000;
+  --dark: #0a0a0a;
+  --border-dark: #111;
+  --text-mute: white;
+}
+ 
+body {
+  background-color: var(--black);
+  color: white;
+}
+ 
+.btn-emerald {
+  border: 1px solid var(--emerald);
+  color: var(--emerald);
+  background: transparent;
+  transition: 0.3s;
+}
+ 
+.btn-emerald:hover {
+  background: var(--emerald);
+  color: black;
+}
+ 
+.btn-emerald-solid {
+  background: var(--emerald);
+  color: black;
+  border: none;
+}
+ 
+.btn-emerald-solid:hover {
+  background: var(--emerald-dark);
+}
+ 
+.card-dark {
+  background: var(--dark);
+  border: 1px solid var(--border-dark);
+  border-radius: 12px;
+}
+ 
+.text-emerald {
+  color: var(--emerald);
+    text-shadow: 0 0 12px rgba(16, 185, 129, 0.6) !important;
+
+}
+ 
+.form-control,
+.form-select {
+  background: #111;
+  border: 1px solid #222;
+  color: white;
+}
+ 
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--emerald);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+  background: #111;
+  color: white;
+}
+ 
+.border-emerald {
+  border: 1px solid var(--emerald);
+}
+ 
+.section {
+  padding: 60px 0;
+}
+ 
+
+ 
+.auth-left {
+ 
+  color: white;
+}
+ 
+.auth-right {
+  background: #000;
+}
+ 
+.auth-card {
+  background: #0a0a0a;
+  border: 1px solid #111;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+}
+ 
+.auth-card h3 {
+  color: white;
+}
+ 
+
+.auth-link {
+  color: #10b981;
+  text-decoration: none;
+}
+ 
+.auth-link:hover {
+  text-decoration: underline;
+}
+ 
+.form-control::placeholder {
+  color: #9CA3AF; 
+  opacity: 1;    
+}
