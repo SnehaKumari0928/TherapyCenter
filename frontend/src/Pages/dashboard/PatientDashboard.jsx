@@ -1,4 +1,7 @@
 // pages/dashboard/PatientDashboard.jsx
+
+import { useContext,useEffect,useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 
 const PatientDashboard = () => {

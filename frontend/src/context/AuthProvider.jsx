@@ -1,31 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AuthContext } from "./AuthContext";
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-
- useEffect(() => {
-  try {
-    const storedUser = localStorage.getItem("user");
-
-    if (storedUser && storedUser !== "undefined") {
-      const parsedUser = JSON.parse(storedUser);
-      if (parsedUser && parsedUser.role) {
-        setUser(parsedUser);
-      } else {
-        setUser(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser && storedUser !== "undefined") {
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser && parsedUser.role) {
+          return parsedUser;
+        }
       }
-    } else {
-      setUser(null);
+      return null;
+    } catch (error) {
+      console.error("Error loading user from localStorage:", error);
+      localStorage.removeItem("user");
+      return null;
     }
-    console.log(storedUser);
-    
-  } catch (error) {
-    console.error("Corrupted user in localStorage:", error);
-    localStorage.removeItem("user"); // cleanup bad data
-    setUser(null);
-  }
-}, []);
+  });
 
   const login = (data) => {
     localStorage.setItem("token", data.token);
