@@ -20,7 +20,7 @@ namespace TherapyCenter2.Controllers
 
 
         [Authorize(Roles = "Patient,Receptionist")]
-        [HttpPost]
+        [HttpPost("createappointment")]
         public async Task<IActionResult> Create([FromBody] AppointmentCreateDto dto)
         {
             var result = await _appointmentService.CreateAsync(dto);

@@ -22,6 +22,16 @@ namespace TherapyCenter2
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("MyCorsPolicy", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173") // your frontend URL
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             // Add services to the container.
             builder.Services.AddDbContext<AppDbContext>(options =>
      options.UseMySql(
@@ -82,7 +92,7 @@ namespace TherapyCenter2
 
             var app = builder.Build();
 
-            app.UseMiddleware<GlobalExceptionMiddleware>();
+          
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -95,6 +105,10 @@ namespace TherapyCenter2
                 });
             }
             app.UseHttpsRedirection();
+
+            app.UseCors("MyCorsPolicy");
+
+            app.UseMiddleware<GlobalExceptionMiddleware>();
             app.UseAuthentication();
 
             app.UseAuthorization();

@@ -24,7 +24,7 @@ namespace TherapyCenter2.Services.Implementations
             if (existingUser != null)
                 throw new Exception("User already exists");
 
-            var allowedRoles = new[] { "Receptionist", "Doctor", "Guardian" };
+            var allowedRoles = new[] { "Receptionist", "Doctor", "Guardian", "Patient" };
 
             if (!allowedRoles.Contains(dto.Role))
                 throw new Exception("Invalid role selection");
