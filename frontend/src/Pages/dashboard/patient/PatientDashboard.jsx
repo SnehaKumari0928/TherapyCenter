@@ -3,7 +3,7 @@
 import { useContext,useEffect,useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { getMyAppointments } from "../../../services/appointmentService";
-import { useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/dashboard/DashboardLayout.jsx"
 const PatientDashboard = () => {
   const {user} = useContext(AuthContext)
@@ -45,7 +45,7 @@ const PatientDashboard = () => {
  
         <button
           className="btn btn-emerald"
-          onClick={() => navigate("/patient/book")}
+          onClick={() => navigate("book-appointment")}
         >
           + Book Appointment
         </button>
@@ -119,7 +119,7 @@ const PatientDashboard = () => {
       </div>
  
       {/* QUICK ACTIONS */}
-      <div className="card-dark p-4 text-center">
+      {/* <div className="card-dark p-4 text-center">
  
         <h5 className="text-emerald mb-3">Quick Actions</h5>
  
@@ -145,7 +145,7 @@ const PatientDashboard = () => {
         </button>
  
       </div>
- 
+  */}
     </DashboardLayout>
  
   );

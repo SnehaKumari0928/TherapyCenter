@@ -106,3 +106,43 @@ body {
   color: #9CA3AF; 
   opacity: 1;    
 }
+
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  border-right: 1px solid var(--border-dark);
+  background: #050505;
+}
+
+.nav-item {
+  display: block;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  color: #ccc;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.nav-item:hover {
+  background: var(--emerald);
+  color: black;
+}
+
+/* .nav-item.active {
+  background: var(--emerald);
+  color: black;
+  font-weight: 600;
+} */
+
+.table {
+  color: white;
+}
+ 
+.table thead {
+  border-bottom: 1px solid var(--border-dark);
+}
+ 
+.table tr {
+  border-bottom: 1px solid #111;
+}

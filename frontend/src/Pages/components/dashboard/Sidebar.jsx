@@ -1,49 +1,127 @@
-// components/dashboard/Sidebar.jsx
+
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+
+import { NavLink } from "react-router-dom";
+
 import { AuthContext } from "../../../context/AuthContext";
+
+ 
+
 const Sidebar = () => {
-  const { user } = useContext(AuthContext);
 
-  return (
-    <div className="p-3" style={{ width: "240px", borderRight: "1px solid #111" }}>
-      <h5 className="text-emerald mb-4">Therapy</h5>
+  const { user } = useContext(AuthContext);
 
-      {/* Admin */}
-      {user?.role === "Admin" && (
-        <>
-          <Link className="d-block mb-2 text-light" to="/admin">Dashboard</Link>
-          <Link className="d-block mb-2 text-light" to="#">Manage Doctors</Link>
-          <Link className="d-block mb-2 text-light" to="#">Manage Therapies</Link>
-        </>
-      )}
+ 
 
-      {/* Doctor */}
-      {user?.role === "Doctor" && (
-        <>
-          <Link className="d-block mb-2 text-light" to="/doctor">Appointments</Link>
-          <Link className="d-block mb-2 text-light" to="#">Add Findings</Link>
-        </>
-      )}
+  return (
 
-      {/* Receptionist */}
-      {user?.role === "Receptionist" && (
-        <>
-          <Link className="d-block mb-2 text-light" to="/receptionist">Book Appointment</Link>
-          <Link className="d-block mb-2 text-light" to="#">Patients</Link>
-        </>
-      )}
+    <div
 
-      {/* Patient / Guardian */}
-      {(user?.role === "Patient" || user?.role === "Guardian") && (
-        <>
-          <Link className="d-block mb-2 text-light" to="/patient">Dashboard</Link>
-          <Link className="d-block mb-2 text-light" to="#">My Appointments</Link>
-          <Link className="d-block mb-2 text-light" to="#">Reports</Link>
-        </>
-      )}
-    </div>
-  );
+      className="p-3 vh-100"
+
+      style={{ width: "240px", borderRight: "1px solid #111" }}
+
+    >
+
+      <h5 className="text-emerald mb-4">TherapyCenter</h5>
+
+ 
+
+      {/* Admin */}
+
+      {user?.role === "Admin" && (
+
+        <>
+
+          <NavLink className="nav-item" to="/admin">Dashboard</NavLink>
+
+          <NavLink className="nav-item" to="#">Manage Doctors</NavLink>
+
+          <NavLink className="nav-item" to="#">Manage Therapies</NavLink>
+
+        </>
+
+      )}
+
+ 
+
+      {/* Doctor */}
+
+      {user?.role === "Doctor" && (
+
+        <>
+
+          <NavLink className="nav-item" to="/doctor">Appointments</NavLink>
+
+          <NavLink className="nav-item" to="#">Add Findings</NavLink>
+
+        </>
+
+      )}
+
+ 
+
+      {/* Receptionist */}
+
+      {user?.role === "Receptionist" && (
+
+        <>
+
+          <NavLink className="nav-item" to="/receptionist">Dashboard</NavLink>
+
+          <NavLink className="nav-item" to="/receptionist/book">Book Appointment</NavLink>
+
+          <NavLink className="nav-item" to="#">Patients</NavLink>
+
+        </>
+
+      )}
+
+ 
+
+      {/* Patient / Guardian */}
+
+      {(user?.role === "Patient" || user?.role === "Guardian") && (
+
+        <>
+
+          <NavLink className="nav-item" to="/patient">Dashboard</NavLink>
+
+ 
+
+          <NavLink className="nav-item" to="/book-appointment">
+
+            Book Appointment
+
+          </NavLink>
+
+ 
+
+          <NavLink className="nav-item" to="/patient/appointments">
+
+            My Appointments
+
+          </NavLink>
+
+ 
+
+          <NavLink className="nav-item" to="/patient/reports">
+
+            Reports
+
+          </NavLink>
+
+        </>
+
+      )}
+
+    </div>
+
+  );
+
 };
 
+ 
+
 export default Sidebar;
+
