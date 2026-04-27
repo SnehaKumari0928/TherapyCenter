@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TherapyCenter2.DTOs.Appointment;
 using TherapyCenter2.Services.Interfaces;
 
@@ -36,7 +37,33 @@ namespace TherapyCenter2.Controllers
             return Ok(result);
         }
 
+        [HttpGet("my")]
+        public async Task<IActionResult> GetMyAppointments()
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
+                if (userIdClaim == null)
+                    return BadRequest("UserId claim is null");
+
+                if (!int.TryParse(userIdClaim, out int patientId))
+                    return BadRequest("Invalid userId format: " + userIdClaim);
+
+                var result = await _appointmentService.GetByPatientIdAsync(patientId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = ex.Message,
+                    inner = ex.InnerException?.Message,
+                    stack = ex.StackTrace
+                });
+            }
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {

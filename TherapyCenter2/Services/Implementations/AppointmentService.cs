@@ -55,6 +55,11 @@ namespace TherapyCenter2.Services.Implementations
             return list.Select(MapAppointmentResponse).ToList();
         }
 
+        public async Task<List<AppointmentResponseDto>> GetByPatientIdAsync(int patientId)
+        {
+            var list = await _appointmentRepository.GetByPatientIdAsync(patientId);
+            return list.Select(MapAppointmentResponse).ToList();
+        }
         public async Task<AppointmentResponseDto> GetByIdAsync(int id)
         {
             var appointment = await _appointmentRepository.GetByIdAsync(id);

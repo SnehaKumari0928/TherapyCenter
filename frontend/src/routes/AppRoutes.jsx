@@ -8,6 +8,7 @@ import AdminDashboard from "../Pages/dashboard/AdminDashboard";
 import DoctorDashboard from "../Pages/dashboard/DoctorDashboard";
 import ReceptionistDashboard from "../Pages/dashboard/ReceptionistDashboard";
 import PatientDashboard from "../Pages/dashboard/patient/PatientDashboard";
+import BookAppointment from "../Pages/dashboard/patient/BookAppointment";
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -46,15 +47,25 @@ function AppRoutes() {
           }
         />
 
-        <Route
-          path="/patient"
-          element={
-            <ProtectedRoute roles={["Patient", "Guardian"]}>
-              <PatientDashboard />
-            </ProtectedRoute>
-          }
-        />
+       <Route
+  path="/patient"
+  element={
+    <ProtectedRoute roles={["Patient", "Guardian"]}>
+      <PatientDashboard />
+    </ProtectedRoute>
+  }
+/>
 
+ <Route
+  path="/book-appointment"
+  element={
+    <ProtectedRoute roles={["Patient", "Receptionist"]}>
+      <BookAppointment />
+    </ProtectedRoute>
+  }
+/>
+
+ 
         {/* Unauthorized Page */}
         <Route path="/unauthorized" element={<h2>Access Denied</h2>} />
 

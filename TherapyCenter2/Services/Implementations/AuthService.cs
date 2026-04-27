@@ -48,6 +48,7 @@ namespace TherapyCenter2.Services.Implementations
                 UserId = createdUser.UserId,
                 Email = createdUser.Email,
                 Role = createdUser.Role,
+                FirstName = createdUser.FirstName,
                 Token = "" 
             };
         }
@@ -71,6 +72,7 @@ namespace TherapyCenter2.Services.Implementations
                 UserId = user.UserId,
                 Email = user.Email,
                 Role = user.Role,
+                FirstName = user.FirstName,
                 Token = token 
             };
         }

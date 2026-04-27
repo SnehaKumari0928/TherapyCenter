@@ -21,7 +21,13 @@ namespace TherapyCenter2.Repositories.Implementations
             await _context.SaveChangesAsync();
             return appointment;
         }
-
+        public async Task<List<Appointment>> GetByPatientIdAsync(int patientid)
+        {
+            return await _context.Appointments
+     .Where(a => a.PatientId == patientid)
+     .AsNoTracking()
+     .ToListAsync();
+        }
         public async Task<List<Appointment>> GetAllAsync()
         {
             return await _context.Appointments.ToListAsync();
