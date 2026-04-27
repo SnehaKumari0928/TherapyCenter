@@ -33,7 +33,7 @@ namespace TherapyCenter2.Services.Implementations
                 PatientId = dto.PatientId,
                 DoctorId = dto.DoctorId,
                 TherapyId = dto.TherapyId,
-                ReceptionistId = dto.ReceptionistId,
+                ReceptionistId = dto.ReceptionistId == 0 ? null : dto.ReceptionistId,
                 AppointmentDate = slot.Date,
                 StartTime = slot.StartTime,
                 EndTime = slot.EndTime,
