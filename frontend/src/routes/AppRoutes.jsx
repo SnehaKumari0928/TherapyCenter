@@ -7,8 +7,7 @@ import Register from "../Pages/auth/Register";
 import AdminDashboard from "../Pages/dashboard/AdminDashboard";
 import DoctorDashboard from "../Pages/dashboard/DoctorDashboard";
 import ReceptionistDashboard from "../Pages/dashboard/ReceptionistDashboard";
-import PatientDashboard from "../Pages/dashboard/PatientDashboard";
-
+import PatientDashboard from "../Pages/dashboard/patient/PatientDashboard";
 function AppRoutes() {
   return (
     <BrowserRouter>
