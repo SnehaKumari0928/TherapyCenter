@@ -8,7 +8,9 @@ export const createAppointment = (data)=>{
 export const getAppointments = ()=>{
     return API.get("/appointment")
 }
-
+export const getMyAppointments = ()=>{
+    return API.get("/appointment/my")
+}
 export const getAppointmentById = (id)=>{
     return API.get(`/appointment/${id}`)
 }

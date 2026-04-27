@@ -12,4 +12,17 @@ Content-Type: application/json
   "phoneNumber": "8967452378"
 }
 
+
+
+
+
+
+
+GET {{TherapyCenter2_HostAddress}}/api/appointment/my
+
+###
+
+### Get My Appointments
+GET https://localhost:7093/api/appointment/my
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJtZWhhckBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQYXRpZW50IiwiZXhwIjoxNzc3MjcyNDQ2LCJpc3MiOiJUaGVyYXB5Q2VudGVyIiwiYXVkIjoiVGhlcmFweUNlbnRlclVzZXJzIn0.d_dr2-quXj1YxWO5BZC15Wmv9o5sjuGlnVC9r6Er5ok
 ###

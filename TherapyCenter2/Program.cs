@@ -32,6 +32,8 @@ namespace TherapyCenter2
                 });
             });
 
+
+
             // Add services to the container.
             builder.Services.AddDbContext<AppDbContext>(options =>
      options.UseMySql(
@@ -46,7 +48,12 @@ namespace TherapyCenter2
 
             builder.Services.AddScoped<IPaymentService,PaymentService>();
 
-
+    //        builder.Services.AddControllers()
+    //.AddJsonOptions(options =>
+    //{
+    //    options.JsonSerializerOptions.ReferenceHandler =
+    //        System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    //});
             var jwtSettings = builder.Configuration
                .GetSection("Jwt")
                .Get<JwtSettings>() ?? throw new Exception("JWT settings not found");
@@ -84,6 +91,9 @@ namespace TherapyCenter2
 
             builder.Services.AddScoped<ISlotRepository, SlotRepository>();
             builder.Services.AddScoped<ISlotService, SlotService>();
+
+            builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            builder.Services.AddScoped<IAppointmentService, AppointmentService>();
             builder.Services.AddControllers();
 
             builder.Services.AddEndpointsApiExplorer();
