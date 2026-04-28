@@ -37,5 +37,19 @@ namespace TherapyCenter2.Repositories.Implementations
         {
             return await _context.Users.ToListAsync();
         }
+
+        public async Task<User> UpdateUserAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+        public async Task<bool> DeleteAsync(User user)
+        {
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
