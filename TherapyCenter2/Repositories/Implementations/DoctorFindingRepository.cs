@@ -2,6 +2,9 @@
 using TherapyCenter2.Models;
 using TherapyCenter2.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace TherapyCenter2.Repositories.Implementations
 {
@@ -27,10 +30,21 @@ namespace TherapyCenter2.Repositories.Implementations
             return await _context.DoctorFindings.ToListAsync();
         }
 
+        
         public async Task<DoctorFinding?> GetByIdAsync(int id)
         {
             return await _context.DoctorFindings.FindAsync(id);
         }
+
+        public async Task<List<DoctorFinding>> GetByPatientIdAsync(int patientId)
+        {
+            return await _context.DoctorFindings
+                .Include(f => f.Appointment)
+                .Where(f =>
+                f.Appointment.PatientId == patientId)
+                .ToListAsync();
+        }
+
 
         public async Task<List<DoctorFinding>> GetByAppointmentIdAsync(int appointmentId)
         {

@@ -20,7 +20,7 @@ namespace TherapyCenter2.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
+        [HttpPost("createtherapy")]
         public async Task<IActionResult> Create(CreateTherapyDto dto)
         {
             var result = await _therapyService.CreateTherapyAsync(dto);

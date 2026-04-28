@@ -4,11 +4,13 @@ import ProtectedRoute from "./ProtectedRoute";
 import Home from "../components/common/Home";
 import Login from "../Pages/auth/Login";
 import Register from "../Pages/auth/Register";
-import AdminDashboard from "../Pages/dashboard/AdminDashboard";
+import AdminDashboard from "../Pages/dashboard/admin/AdminDashboard";
 import DoctorDashboard from "../Pages/dashboard/DoctorDashboard";
 import ReceptionistDashboard from "../Pages/dashboard/ReceptionistDashboard";
 import PatientDashboard from "../Pages/dashboard/patient/PatientDashboard";
 import BookAppointment from "../Pages/dashboard/patient/BookAppointment";
+import MyAppointments from "../Pages/dashboard/patient/MyAppointments";
+import Reports from "../Pages/dashboard/patient/Reports";
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -56,14 +58,25 @@ function AppRoutes() {
   }
 />
 
- <Route
-  path="/book-appointment"
-  element={
-    <ProtectedRoute roles={["Patient", "Receptionist"]}>
-      <BookAppointment />
-    </ProtectedRoute>
-  }
-/>
+ <Route path="/patient/book-appointment" element={
+  <ProtectedRoute roles={["Patient"]}>
+<BookAppointment />
+  </ProtectedRoute>
+  } />
+
+
+  <Route path="/patient/my-appointments" element={
+  <ProtectedRoute roles={["Patient"]}>
+<MyAppointments />
+  </ProtectedRoute>
+  } />
+
+
+<Route path="/patient/reports" element={
+  <ProtectedRoute roles={["Patient"]}>
+<Reports />
+  </ProtectedRoute>
+  } />
 
  
         {/* Unauthorized Page */}

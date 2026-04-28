@@ -1,4 +1,5 @@
-﻿using TherapyCenter2.Models;
+﻿using TherapyCenter2.DTOs.DoctorFinding;
+using TherapyCenter2.Models;
 
 namespace TherapyCenter2.Repositories.Interfaces
 {
@@ -11,5 +12,7 @@ namespace TherapyCenter2.Repositories.Interfaces
         Task<List<DoctorFinding>> GetByAppointmentIdAsync(int appointmentId);
         Task UpdateAsync(DoctorFinding finding);
         Task DeleteAsync(DoctorFinding finding);
+
+        Task<List<DoctorFinding>> GetByPatientIdAsync(int patientId);
     }
 }

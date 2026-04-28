@@ -79,6 +79,13 @@ namespace TherapyCenter2.Services.Implementations
             await _repository.DeleteAsync(finding);
         }
 
+        public async Task<List<DoctorFindingResponseDto>> GetByPatientIdAsync(int patientId)
+        {
+            var list = await _repository.GetByPatientIdAsync(patientId);
+
+            return list.Select(MapDoctorFindingResponse).ToList();
+        }
+
         private static DoctorFindingResponseDto MapDoctorFindingResponse(DoctorFinding f)
         {
             return new DoctorFindingResponseDto

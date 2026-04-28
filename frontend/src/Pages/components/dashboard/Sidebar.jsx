@@ -33,11 +33,19 @@ const Sidebar = () => {
 
         <>
 
-          <NavLink className="nav-item" to="/admin">Dashboard</NavLink>
+          <NavLink className="nav-item" to="/admin" >Dashboard</NavLink>
+          <NavLink className="nav-item" to="/admin/users">Users</NavLink>
 
-          <NavLink className="nav-item" to="#">Manage Doctors</NavLink>
+          <NavLink className="nav-item" to="/admin/doctors">Manage Doctors</NavLink>
 
-          <NavLink className="nav-item" to="#">Manage Therapies</NavLink>
+          <NavLink className="nav-item" to="/admin/therapies">Manage Therapies</NavLink>
+          <NavLink className="nav-item" to="/admin/patients">Patients</NavLink>
+          <NavLink className="nav-item" to="/admin/appointments">Appointments</NavLink>
+          <NavLink className="nav-item" to="/admin/create-slot">Create Slot</NavLink>
+
+          <NavLink className="nav-item" to="/admin/reports">Reports</NavLink>
+
+
 
         </>
 
@@ -89,7 +97,7 @@ const Sidebar = () => {
 
  
 
-          <NavLink className="nav-item" to="/book-appointment">
+          <NavLink className="nav-item" to="/patient/book-appointment">
 
             Book Appointment
 
@@ -97,7 +105,7 @@ const Sidebar = () => {
 
  
 
-          <NavLink className="nav-item" to="/patient/appointments">
+          <NavLink className="nav-item" to="/patient/my-appointments">
 
             My Appointments
 

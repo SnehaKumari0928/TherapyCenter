@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TherapyCenter2.DTOs.DoctorFinding;
 using TherapyCenter2.Services.Interfaces;
 
@@ -19,7 +20,7 @@ namespace TherapyCenter2.Controllers
         }
 
         [Authorize(Roles = "Doctor")]
-        [HttpPost]
+        [HttpPost("create_finding")]
         public async Task<IActionResult> Create(CreateDoctorFindingDto dto)
         {
             var result = await _service.CreateAsync(dto);
@@ -30,6 +31,23 @@ namespace TherapyCenter2.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _service.GetAllAsync();
+            return Ok(result);
+        }
+
+
+        [Authorize(Roles = "Patient,Guardian")]
+        [HttpGet("my-report")]
+        public async Task<IActionResult> GetMyReports()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            if(userId == null)
+            {
+                return Unauthorized("Invalid token");
+            }
+
+            var result = await _service.GetByPatientIdAsync(userId);
+
             return Ok(result);
         }
 

@@ -5,7 +5,7 @@ export const createAppointment = (data)=>{
     return API.post("/appointment/createappointment",data);
 }
 
-export const getAppointments = ()=>{
+export const getAllAppointments = ()=>{
     return API.get("/appointment")
 }
 export const getMyAppointments = ()=>{

@@ -18,7 +18,7 @@ namespace TherapyCenter2
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -101,8 +101,12 @@ namespace TherapyCenter2
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
             var app = builder.Build();
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                await DbSeeder.SeedAdminAsync(services);
+            }
 
-          
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
