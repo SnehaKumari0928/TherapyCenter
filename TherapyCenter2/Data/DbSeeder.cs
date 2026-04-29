@@ -10,7 +10,7 @@ namespace TherapyCenter2.Data
         {
             var userRepo = services.GetRequiredService<IUserRepository>();
 
-            var existingAdmin = await userRepo.GetByEmailAsync("admin@therapy.com");
+            var existingAdmin = await userRepo.GetByEmailAsync("harsh@therapy.com");
 
             if (existingAdmin == null)
             {

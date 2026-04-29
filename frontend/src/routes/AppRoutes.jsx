@@ -5,12 +5,14 @@ import Home from "../components/common/Home";
 import Login from "../Pages/auth/Login";
 import Register from "../Pages/auth/Register";
 import AdminDashboard from "../Pages/dashboard/admin/AdminDashboard";
-import DoctorDashboard from "../Pages/dashboard/DoctorDashboard";
 import ReceptionistDashboard from "../Pages/dashboard/ReceptionistDashboard";
 import PatientDashboard from "../Pages/dashboard/patient/PatientDashboard";
 import BookAppointment from "../Pages/dashboard/patient/BookAppointment";
 import MyAppointments from "../Pages/dashboard/patient/MyAppointments";
 import Reports from "../Pages/dashboard/patient/Reports";
+import Users from "../Pages/dashboard/admin/Users";
+import DoctorDashboard from "../Pages/dashboard/doctor/DoctorDashboard";
+import ManageDoctors from "../Pages/dashboard/admin/ManageDoctors";
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -27,6 +29,25 @@ function AppRoutes() {
           element={
             <ProtectedRoute roles={["Admin"]}>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+
+         <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute roles={["Admin"]}>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+
+<Route
+          path="/admin/doctors"
+          element={
+            <ProtectedRoute roles={["Admin"]}>
+              <ManageDoctors />
             </ProtectedRoute>
           }
         />

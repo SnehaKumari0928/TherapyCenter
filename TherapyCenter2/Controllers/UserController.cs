@@ -9,7 +9,7 @@ namespace TherapyCenter2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    
     public class UserController : ControllerBase
     {
 
@@ -21,6 +21,7 @@ namespace TherapyCenter2.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
         {
             var users = await _userService.GetAllAsync();

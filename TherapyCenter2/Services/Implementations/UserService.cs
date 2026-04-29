@@ -20,6 +20,9 @@ namespace TherapyCenter2.Services.Implementations
         {
             var users = await _repo.GetAllAsync();
 
+            if (users == null)
+                return new List<UserResponseDto>();
+
             return users.Select(u => new UserResponseDto
             {
                 UserId = u.UserId,
