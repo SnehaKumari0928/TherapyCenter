@@ -5,9 +5,11 @@ import Home from "../components/common/Home";
 import Login from "../Pages/auth/Login";
 import Register from "../Pages/auth/Register";
 import AdminDashboard from "../Pages/dashboard/admin/AdminDashboard";
-import ReceptionistDashboard from "../Pages/dashboard/ReceptionistDashboard";
+import ReceptionistDashboard from "../Pages/dashboard/receptionist/ReceptionistDashboard";
 import PatientDashboard from "../Pages/dashboard/patient/PatientDashboard";
 import BookAppointment from "../Pages/dashboard/patient/BookAppointment";
+import BookAppointments from "../Pages/dashboard/receptionist/BookAppointments";
+
 import MyAppointments from "../Pages/dashboard/patient/MyAppointments";
 import Reports from "../Pages/dashboard/patient/Reports";
 import Users from "../Pages/dashboard/admin/Users";
@@ -15,6 +17,7 @@ import DoctorDashboard from "../Pages/dashboard/doctor/DoctorDashboard";
 import ManageDoctors from "../Pages/dashboard/admin/ManageDoctors";
 import ManageTherapies from "../Pages/dashboard/admin/ManageTherapies";
 import CreateSlot from "../Pages/dashboard/admin/CreateSlot";
+import AllAppointments from "../Pages/dashboard/receptionist/AllAppointments";
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -86,6 +89,24 @@ function AppRoutes() {
           element={
             <ProtectedRoute roles={["Receptionist"]}>
               <ReceptionistDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/receptionist/book"
+          element={
+            <ProtectedRoute roles={["Receptionist"]}>
+              <BookAppointments />
+            </ProtectedRoute>
+          }
+        />
+
+         <Route
+          path="/receptionist/appointments"
+          element={
+            <ProtectedRoute roles={["Receptionist"]}>
+              <AllAppointments />
             </ProtectedRoute>
           }
         />

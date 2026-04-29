@@ -1,9 +1,20 @@
 import { useState, useEffect } from "react"
 import { getAllUsers, deleteUser, updateUser } from "../../../services/userService"
 import DashboardLayout from "../../components/dashboard/DashboardLayout"
+import { createUser } from "../../../services/userService"
 const Users = () => {
    const [users, setUsers] = useState([])
    const [editUser, setEditUser] = useState(null)
+   const [showModal,setShowModal] = useState(false)
+
+   const [form,setForm] = useState({
+    firstName:"",
+    lastName:"",
+    email:"",
+    password:"",
+    phoneNumber:"",
+    role:""
+   })
 
    useEffect(()=>{
     loadUsers();
@@ -36,6 +47,32 @@ const Users = () => {
     console.error(err)
       }
   };
+
+  const handleCreate =async(e)=>{
+    e.preventDefault();
+
+    try{
+     await createUser(form)
+
+     alert("User created successfully")
+
+     setShowModal(false)
+
+     setForm({
+       firstName:"",
+    lastName:"",
+    email:"",
+    password:"",
+    phoneNumber:"",
+    role:""
+     })
+
+     loadUsers()
+    }
+    catch(err){
+     alert(err.response?.data || "Error creating user ")
+    }
+  }
 
   return (
    
@@ -247,6 +284,106 @@ const Users = () => {
 
       )}
 
+
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <button className="btn btn-emerald "
+          onClick={()=> setShowModal(true)}
+          >
+            + Create User
+          </button>
+        </div>
+    {showModal && (
+  <div className="modal d-block" style={{ background: "#000000aa" }}>
+    <div className="modal-dialog">
+      <div className="modal-content card-dark p-4">
+
+        <h5 className="text-emerald mb-3">Create User</h5>
+
+        <form onSubmit={handleCreate}>
+
+          <input
+            className="form-control mb-2"
+            placeholder="First Name"
+            value={form.firstName}
+            onChange={(e) =>
+              setForm({ ...form, firstName: e.target.value })
+            }
+            required
+          />
+
+          <input
+            className="form-control mb-2"
+            placeholder="Last Name"
+            value={form.lastName}
+            onChange={(e) =>
+              setForm({ ...form, lastName: e.target.value })
+            }
+            required
+          />
+
+          <input
+            type="email"
+            className="form-control mb-2"
+            placeholder="Email"
+            value={form.email}
+            onChange={(e) =>
+              setForm({ ...form, email: e.target.value })
+            }
+            required
+          />
+
+          <input
+            type="password"
+            className="form-control mb-2"
+            placeholder="Password"
+            value={form.password}
+            onChange={(e) =>
+              setForm({ ...form, password: e.target.value })
+            }
+            required
+          />
+
+          <input
+            className="form-control mb-2"
+            placeholder="Phone Number"
+            value={form.phoneNumber}
+            onChange={(e) =>
+              setForm({ ...form, phoneNumber: e.target.value })
+            }
+            required
+          />
+
+          <select
+            className="form-select mb-3"
+            value={form.role}
+            onChange={(e) =>
+              setForm({ ...form, role: e.target.value })
+            }
+          >
+            <option value="Receptionist">Receptionist</option>
+            <option value="Doctor">Doctor</option>
+          </select>
+
+          <div className="d-flex justify-content-end">
+            <button
+              type="button"
+              className="btn btn-secondary me-2"
+              onClick={() => setShowModal(false)}
+            >
+              Cancel
+            </button>
+
+            <button className="btn btn-emerald">
+              Create
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+)}
  
 
     </DashboardLayout>

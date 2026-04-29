@@ -18,7 +18,7 @@ export const getMyReports = ()=>{
 }
 
 export const getByAppointmentId = (id)=>{
-    return API.get(`/doctorfinding/${id}`)
+    return API.get(`/doctorfinding/appointment/${id}`)
 }
 
 export const updateDoctorFinding = (id,data)=>{
