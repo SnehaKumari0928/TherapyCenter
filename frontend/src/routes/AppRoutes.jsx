@@ -13,6 +13,8 @@ import Reports from "../Pages/dashboard/patient/Reports";
 import Users from "../Pages/dashboard/admin/Users";
 import DoctorDashboard from "../Pages/dashboard/doctor/DoctorDashboard";
 import ManageDoctors from "../Pages/dashboard/admin/ManageDoctors";
+import ManageTherapies from "../Pages/dashboard/admin/ManageTherapies";
+import CreateSlot from "../Pages/dashboard/admin/CreateSlot";
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -48,6 +50,24 @@ function AppRoutes() {
           element={
             <ProtectedRoute roles={["Admin"]}>
               <ManageDoctors />
+            </ProtectedRoute>
+          }
+        />
+
+         <Route
+          path="/admin/therapies"
+          element={
+            <ProtectedRoute roles={["Admin"]}>
+              <ManageTherapies />
+            </ProtectedRoute>
+          }
+        />
+
+           <Route
+          path="/admin/slots"
+          element={
+            <ProtectedRoute roles={["Admin"]}>
+              <CreateSlot />
             </ProtectedRoute>
           }
         />

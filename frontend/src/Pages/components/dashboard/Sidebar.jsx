@@ -41,7 +41,7 @@ const Sidebar = () => {
           <NavLink className="nav-item" to="/admin/therapies">Manage Therapies</NavLink>
           <NavLink className="nav-item" to="/admin/patients">Patients</NavLink>
           <NavLink className="nav-item" to="/admin/appointments">Appointments</NavLink>
-          <NavLink className="nav-item" to="/admin/create-slot">Create Slot</NavLink>
+          <NavLink className="nav-item" to="/admin/slots">Create Slot</NavLink>
 
           <NavLink className="nav-item" to="/admin/reports">Reports</NavLink>
 

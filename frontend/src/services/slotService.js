@@ -5,7 +5,7 @@ export const createSlot = (data)=>{
     return API.post("/slot/createslot",data);
 }
 
-export const getslot = ()=>{
+export const getslots = ()=>{
     return API.get("/slot")
 }
 
