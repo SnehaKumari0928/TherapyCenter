@@ -12,5 +12,7 @@ namespace TherapyCenter2.Repositories.Interfaces
         Task<List<Appointment>> GetByPatientIdAsync(int patientId);
         Task UpdateAsync(Appointment appointment);
         Task DeleteAsync(Appointment appointment);
+        Task<List<Appointment>> GetByDoctorIdAsync(int doctorId);
+
     }
 }

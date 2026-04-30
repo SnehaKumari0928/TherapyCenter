@@ -14,5 +14,6 @@ namespace TherapyCenter2.Services.Interfaces
 
         Task CompleteAsync(int id);
         Task CancelAsync(int id);
+        Task<List<AppointmentResponseDto>> GetByDoctorIdAsync(int doctorId);
     }
 }

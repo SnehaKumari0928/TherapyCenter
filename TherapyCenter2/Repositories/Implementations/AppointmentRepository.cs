@@ -49,5 +49,13 @@ namespace TherapyCenter2.Repositories.Implementations
             _context.Appointments.Remove(appointment);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<Appointment>> GetByDoctorIdAsync(int doctorId)
+        {
+            return await _context.Appointments
+                .Where(a => a.DoctorId == doctorId)
+                .ToListAsync();
+        }
+
     }
 }

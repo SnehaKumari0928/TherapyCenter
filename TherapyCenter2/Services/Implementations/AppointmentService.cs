@@ -133,5 +133,27 @@ namespace TherapyCenter2.Services.Implementations
                 Notes = a.Notes
             };
         }
+
+        public async Task<List<AppointmentResponseDto>> GetByDoctorIdAsync(int doctorId)
+        {
+            var list = await _appointmentRepository.GetByDoctorIdAsync(doctorId);
+
+            return list.Select(a => new
+             AppointmentResponseDto
+            {
+                AppointmentId = a.AppointmentId,
+                PatientId = a.PatientId,
+                DoctorId = a.DoctorId,
+                TherapyId = a.TherapyId,
+                AppointmentDate = a.AppointmentDate,
+                StartTime = a.StartTime,
+                EndTime = a.EndTime,
+                Status = a.Status,
+                Notes = a.Notes
+
+            }
+            ).ToList();
+        }
+
     }
 }

@@ -104,5 +104,23 @@ namespace TherapyCenter2.Controllers
             await _appointmentService.CancelAsync(id);
             return Ok(new { message = "Appointment cancelled" });
         }
+
+        [Authorize(Roles = "Doctor")]
+        [HttpGet("appointment")]
+        public async Task<IActionResult> GetDoctorAppointments()
+        {
+            var doctorIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if(doctorIdClaim == null)
+            {
+                return Unauthorized("Invalid token");
+            }
+
+            int doctorId = int.Parse(doctorIdClaim.Value);
+
+            var result = await _appointmentService.GetByDoctorIdAsync(doctorId);
+
+            return Ok(result);
+        }
     }
 }

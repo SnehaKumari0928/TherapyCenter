@@ -13,7 +13,7 @@ const Users = () => {
     email:"",
     password:"",
     phoneNumber:"",
-    role:""
+    role:"Receptionist"
    })
 
    useEffect(()=>{
@@ -64,7 +64,7 @@ const Users = () => {
     email:"",
     password:"",
     phoneNumber:"",
-    role:""
+    role:"Receptionist"
      })
 
      loadUsers()

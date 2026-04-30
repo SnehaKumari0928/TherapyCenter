@@ -30,3 +30,7 @@ export const cancelAppointment = (id)=>{
 export const completeAppointment = (id)=>{
     return API.put(`/appointment/complete/${id}`)
 }
+
+export const getDoctorAppointment = ()=>{
+    return API.get("/appointment/doctor")
+}

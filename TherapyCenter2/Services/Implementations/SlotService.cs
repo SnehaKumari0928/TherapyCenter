@@ -71,6 +71,10 @@ namespace TherapyCenter2.Services.Implementations
 
             if (slot == null)
                 throw new Exception("Slot not found");
+            if (slot.IsBooked)
+            {
+                throw new Exception("Cannot update booked slot");
+            }
 
             if (dto.StartTime >= dto.EndTime)
                 throw new Exception("Invalid time");
