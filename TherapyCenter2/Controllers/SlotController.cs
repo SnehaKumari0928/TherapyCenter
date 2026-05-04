@@ -19,7 +19,7 @@ namespace TherapyCenter2.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
+        [HttpPost("createslot")]
         public async Task<IActionResult> Create(CreateSlotDto dto)
         {
             var result = await _slotService.CreateSlotAsync(dto);

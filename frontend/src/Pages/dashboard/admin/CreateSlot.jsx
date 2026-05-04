@@ -24,14 +24,14 @@ const CreateSlot = () => {
     const loadSlots = async()=>{
         const res = await getslots()
         setSlots(res.data)
-
+        console.log(res.data);
     }
 
     const loadDoctors = async()=>{
         const res = await getDoctors()
-        setDoctors(res.data.filter(u => u.Role === "Doctor"))
+        setDoctors(res.data)
 
-        console.log(res.data.filter(u => u.Role === "Doctor"))
+        console.log(res.data)
     }
 
     const handleSubmit = async(e)=>{
@@ -39,9 +39,11 @@ const CreateSlot = () => {
 
         try{
           await createSlot({
-            ...form,
-            doctorId: Number(form.doctorId)
-          })
+  doctorId: Number(form.doctorId),
+  date: form.date,                 // "2026-05-04"
+  startTime: form.startTime + ":00",
+  endTime: form.endTime + ":00"
+});
 
           setForm({
              doctorId:"",
@@ -116,7 +118,7 @@ const CreateSlot = () => {
 
               <select
 
-                className="form-select mb-2"
+                className="form-select mb-3"
 
                 value={form.doctorId}
 
@@ -134,9 +136,9 @@ const CreateSlot = () => {
 
                 {doctors.map(d => (
 
-                  <option key={d.userId} value={d.userId}>
+                  <option className="text-mute" key={d.userId} value={d.userId}>
 
-                    {d.firstName} {d.lastName}
+                    {d.fullName}
 
                   </option>
 

@@ -10,17 +10,32 @@ const BookAppointment = () => {
   const [doctors, setDoctors] = useState([]);
   const [therapies, setTherapies] = useState([]);
   const [slots, setSlots] = useState([]);
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState( {doctorId: "",
+  therapyId: "",
+  date: "",
+  slotId: ""
+});
 
   const navigate = useNavigate();
 
   useEffect(() => {
     load();
+    
   }, []);
+
+  useEffect(() => {
+  if (form.doctorId && form.date) {
+    console.log("CALLING API WITH:", form.doctorId, form.date);
+    fetchSlots(form.doctorId, form.date);
+  }
+}, [form.doctorId, form.date]);
 
   const load = async () => {
     const doctorRes = await getDoctors();
     const therapyRes = await getTherapies();
+    console.log(doctorRes)
+    console.log(therapyRes);
+    
 
     setDoctors(doctorRes?.data || []);
     setTherapies(therapyRes?.data || []);
@@ -28,12 +43,16 @@ const BookAppointment = () => {
 
   // ✅ FIXED SLOT FETCH
   const fetchSlots = async (doctorId, date) => {
+
+    console.log("CALLING API WITH:", doctorId, date);
     if (!doctorId || !date) return;
 
     const res = await getSlotsByDoctor(doctorId, date);
 
     // ✅ show only available slots
     setSlots(res?.data?.filter(s => !s.isBooked) || []);
+
+    console.log(res?.data?.filter(s => !s.isBooked)|| [])
   };
 
   return (
@@ -46,17 +65,19 @@ const BookAppointment = () => {
         {/* DOCTOR */}
         <select
           className="form-select mb-3"
-          onChange={(e) => {
-            const doctorId = e.target.value;
-            setForm((prev) => ({ ...prev, doctorId }));
+           onChange={(e) => {
+    console.log("DATE SELECTED:", e.target.value);
 
-            fetchSlots(doctorId, form.date);
-          }}
+    setForm(prev => ({
+      ...prev,
+      date: e.target.value
+    }));
+  }}
         >
           <option>Select Doctor</option>
           {doctors.map((d) => (
-            <option key={d.userId} value={d.userId}>
-              Dr. {d.firstName}
+            <option key={d.doctorId} value={d.doctorId}>
+              Dr. {d.fullName}
             </option>
           ))}
         </select>

@@ -95,6 +95,9 @@ namespace TherapyCenter2
             builder.Services.AddScoped<IAppointmentService, AppointmentService>();
             builder.Services.AddScoped<IUserService,UserService>();
 
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+
             builder.Services.AddControllers();
 
             builder.Services.AddEndpointsApiExplorer();
