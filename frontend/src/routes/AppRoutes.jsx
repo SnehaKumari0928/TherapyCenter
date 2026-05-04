@@ -18,6 +18,8 @@ import ManageDoctors from "../Pages/dashboard/admin/ManageDoctors";
 import ManageTherapies from "../Pages/dashboard/admin/ManageTherapies";
 import CreateSlot from "../Pages/dashboard/admin/CreateSlot";
 import AllAppointments from "../Pages/dashboard/receptionist/AllAppointments";
+import DoctorAppointments from "../Pages/dashboard/doctor/DoctorAppointments";
+import AddFindings from "../Pages/dashboard/doctor/AddFindings";
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -80,6 +82,24 @@ function AppRoutes() {
           element={
             <ProtectedRoute roles={["Doctor"]}>
               <DoctorDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+         <Route
+          path="/doctor/appointments"
+          element={
+            <ProtectedRoute roles={["Doctor"]}>
+              <DoctorAppointments />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/doctor/findings"
+          element={
+            <ProtectedRoute roles={["Doctor"]}>
+              <AddFindings />
             </ProtectedRoute>
           }
         />

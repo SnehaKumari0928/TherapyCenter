@@ -59,9 +59,9 @@ const Sidebar = () => {
 
         <>
 
-          <NavLink className="nav-item" to="/doctor">Appointments</NavLink>
+          <NavLink className="nav-item" to="/doctor/appointments">Appointments</NavLink>
 
-          <NavLink className="nav-item" to="#">Add Findings</NavLink>
+          <NavLink className="nav-item" to="/doctor/findings">Add Findings</NavLink>
 
         </>
 

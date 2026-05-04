@@ -12,7 +12,6 @@ using TherapyCenter2.Repositories.Implementations;
 using TherapyCenter2.Repositories.Interfaces;
 using TherapyCenter2.Services.Implementations;
 using TherapyCenter2.Services.Interfaces;
-using TherapyCenter2.Services.Payment;
 
 namespace TherapyCenter2
 {

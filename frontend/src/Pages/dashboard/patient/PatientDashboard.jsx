@@ -1,88 +1,118 @@
-// pages/dashboard/PatientDashboard.jsx
-
-import { useContext,useEffect,useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { getMyAppointments } from "../../../services/appointmentService";
-import {  useNavigate } from "react-router-dom";
-import DashboardLayout from "../../components/dashboard/DashboardLayout.jsx"
+import { getMyPayments, createOrder } from "../../../services/paymentService";
+import { useNavigate } from "react-router-dom";
+import DashboardLayout from "../../components/dashboard/DashboardLayout";
+
 const PatientDashboard = () => {
-  const {user} = useContext(AuthContext)
-  const [appointments, setAppointments] = useState([])
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useEffect(()=>{
-   fetchAppointments();
-  },[]);
+  const [appointments, setAppointments] = useState([]);
+  const [payments, setPayments] = useState([]);
 
-  const fetchAppointments = async () => {
-  try {
-    const res = await getMyAppointments();
+  useEffect(() => {
+    loadData();
+  }, []);
 
-    // If API returns data inside .data, use this instead:
-    const myAppointments = res?.data ?? res;
+  // 🔥 LOAD DATA
+  const loadData = async () => {
+    try {
+      const apptRes = await getMyAppointments();
+      const payRes = await getMyPayments();
 
-    setAppointments(myAppointments);
-    console.log(myAppointments);
-  } catch (error) {
-    console.error("Error fetching appointments:", error);
-  }
-};
+      setAppointments(apptRes?.data || []);
+      setPayments(payRes?.data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
- const total = appointments.length;
- const upcoming = appointments.filter(a => a.status === "Scheduled").length;
- const completed = appointments.filter(a => a.status === "Completed").length;
- const recent = appointments.slice(0,5);
+  // 🔥 MAP PAYMENTS
+  const paymentMap = {};
+  payments.forEach((p) => {
+    paymentMap[p.appointmentId] = p;
+  });
+
+  // 🔥 PAY HANDLER
+  const handlePay = async (appointmentId) => {
+    try {
+      const res = await createOrder({ appointmentId });
+
+      navigate("/patient/payment", {
+        state: {
+          clientSecret: res.data.clientSecret,
+          paymentIntentId: res.data.paymentIntentId,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Payment failed");
+    }
+  };
+
+  // 🔥 STATS
+  const total = appointments.length;
+  const upcoming = appointments.filter(a => a.status === "Scheduled").length;
+  const completed = appointments.filter(a => a.status === "Completed").length;
+
+  const recent = appointments.slice(0, 5);
 
   return (
     <DashboardLayout>
- 
+
       {/* HEADER */}
       <div className="d-flex justify-content-between mb-4">
         <div>
-          <h3 className="text-emerald">Welcome {user.firstName}</h3>
-          <p className="text-mute">Manage your therapy journey</p>
+          <h3 className="text-emerald">
+            Welcome, {user?.firstName} 👋
+          </h3>
+          <p className="text-mute">
+            Track your therapy & payments
+          </p>
         </div>
- 
+
         <button
           className="btn btn-emerald"
-          onClick={() => navigate("book-appointment")}
+          onClick={() => navigate("/patient/book")}
         >
           + Book Appointment
         </button>
       </div>
- 
+
       {/* STATS */}
       <div className="row mb-4">
- 
+
         <div className="col-md-4">
           <div className="card-dark p-3 text-center">
             <h4 className="text-emerald">{total}</h4>
             <p className="text-mute small">Total</p>
           </div>
         </div>
- 
+
         <div className="col-md-4">
           <div className="card-dark p-3 text-center">
             <h4 className="text-warning">{upcoming}</h4>
             <p className="text-mute small">Upcoming</p>
           </div>
         </div>
- 
+
         <div className="col-md-4">
           <div className="card-dark p-3 text-center">
             <h4 className="text-success">{completed}</h4>
             <p className="text-mute small">Completed</p>
           </div>
         </div>
- 
+
       </div>
- 
-      {/* RECENT */}
-      <div className="card-dark p-4 mb-4">
- 
+
+      {/* RECENT APPOINTMENTS */}
+      <div className="card-dark p-4">
+
         <div className="d-flex justify-content-between mb-3">
           <h5 className="text-emerald">Recent Appointments</h5>
- 
+
           <button
             className="btn btn-emerald-outline btn-sm"
             onClick={() => navigate("/patient/appointments")}
@@ -90,64 +120,92 @@ const PatientDashboard = () => {
             View All
           </button>
         </div>
- 
+
         {recent.length === 0 ? (
           <p className="text-mute">No appointments yet</p>
         ) : (
-          <table className="table table-dark">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Status</th>
-              </tr>
-            </thead>
- 
-            <tbody>
-              {recent.map(a => (
-                <tr key={a.appointmentId}>
-                  <td>{a.appointmentDate}</td>
-                  <td>{a.startTime} - {a.endTime}</td>
-                  <td>{a.status}</td>
+          <div className="table-responsive">
+            <table className="table table-dark align-middle">
+
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                  <th>Payment</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
- 
-          </table>
+              </thead>
+
+              <tbody>
+                {recent.map((a) => {
+                  const payment = paymentMap[a.appointmentId];
+
+                  const isPaid = payment?.status === "Paid";
+
+                  return (
+                    <tr key={a.appointmentId}>
+
+                      <td>{a.appointmentDate}</td>
+
+                      <td>
+                        {a.startTime} - {a.endTime}
+                      </td>
+
+                      {/* STATUS */}
+                      <td>
+                        <span
+                          className={
+                            a.status === "Completed"
+                              ? "text-success"
+                              : a.status === "Confirmed"
+                              ? "text-info"
+                              : "text-warning"
+                          }
+                        >
+                          {a.status}
+                        </span>
+                      </td>
+
+                      {/* PAYMENT */}
+                      <td>
+                        {isPaid ? (
+                          <span className="text-success">Paid</span>
+                        ) : (
+                          <span className="text-danger">Pending</span>
+                        )}
+                      </td>
+
+                      {/* ACTION */}
+                      <td>
+                        {!isPaid && a.status === "Scheduled" && (
+                          <button
+                            className="btn btn-emerald btn-sm"
+                            onClick={() =>
+                              handlePay(a.appointmentId)
+                            }
+                          >
+                            Pay Now
+                          </button>
+                        )}
+
+                        {isPaid && (
+                          <span className="text-success">✔</span>
+                        )}
+                      </td>
+
+                    </tr>
+                  );
+                })}
+              </tbody>
+
+            </table>
+          </div>
         )}
- 
+
       </div>
- 
-      {/* QUICK ACTIONS */}
-      {/* <div className="card-dark p-4 text-center">
- 
-        <h5 className="text-emerald mb-3">Quick Actions</h5>
- 
-        <button
-          className="btn btn-emerald me-2"
-          onClick={() => navigate("/patient/book")}
-        >
-          Book Appointment
-        </button>
- 
-        <button
-          className="btn btn-emerald-outline me-2"
-          onClick={() => navigate("/patient/appointments")}
-        >
-          My Appointments
-        </button>
- 
-        <button
-          className="btn btn-emerald-outline"
-          onClick={() => navigate("/patient/reports")}
-        >
-          Reports
-        </button>
- 
-      </div>
-  */}
+
     </DashboardLayout>
- 
   );
 };
 
