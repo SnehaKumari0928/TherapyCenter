@@ -19,6 +19,7 @@ namespace TherapyCenter2.Repositories.Implementations
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
             return user;
         }
 

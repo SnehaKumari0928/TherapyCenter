@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using TherapyCenter2.Data;
 using TherapyCenter2.DTOs.Appointment;
+using TherapyCenter2.Models;
 using TherapyCenter2.Services.Interfaces;
 
 namespace TherapyCenter2.Controllers
@@ -13,10 +16,11 @@ namespace TherapyCenter2.Controllers
     {
 
         private readonly IAppointmentService _appointmentService;
-
-        public AppointmentController(IAppointmentService appointmentService)
+        private readonly AppDbContext _context;
+        public AppointmentController(IAppointmentService appointmentService, AppDbContext context)
         {
             _appointmentService = appointmentService;
+            _context = context;
         }
 
 
@@ -24,7 +28,14 @@ namespace TherapyCenter2.Controllers
         [HttpPost("createappointment")]
         public async Task<IActionResult> Create([FromBody] AppointmentCreateDto dto)
         {
-            var result = await _appointmentService.CreateAsync(dto);
+            var userId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier).Value
+            );
+
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+
+           var  PatientId = patient.PatientId; // CORRECT
+            var result = await _appointmentService.CreateAsync(dto, PatientId);
             return Ok(result);
         }
 
@@ -37,32 +48,26 @@ namespace TherapyCenter2.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Patient")]
         [HttpGet("my")]
         public async Task<IActionResult> GetMyAppointments()
         {
-            try
-            {
-                var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                if (userIdClaim == null)
-                    return BadRequest("UserId claim is null");
+            if (userIdClaim == null)
+                return Unauthorized("Invalid token");
 
-                if (!int.TryParse(userIdClaim, out int patientId))
-                    return BadRequest("Invalid userId format: " + userIdClaim);
+            int userId = int.Parse(userIdClaim);
 
-                var result = await _appointmentService.GetByPatientIdAsync(patientId);
+            var patient = await _context.Patients
+                .FirstOrDefaultAsync(p => p.UserId == userId);
 
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
-                {
-                    message = ex.Message,
-                    inner = ex.InnerException?.Message,
-                    stack = ex.StackTrace
-                });
-            }
+            if (patient == null)
+                return BadRequest("Patient not found");
+
+            var result = await _appointmentService.GetByPatientIdAsync(patient.PatientId);
+
+            return Ok(result);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)

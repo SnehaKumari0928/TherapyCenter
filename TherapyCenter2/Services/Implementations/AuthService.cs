@@ -1,4 +1,6 @@
-﻿using TherapyCenter2.DTOs.Auth;
+﻿using Microsoft.EntityFrameworkCore;
+using TherapyCenter2.Data;
+using TherapyCenter2.DTOs.Auth;
 using TherapyCenter2.Helper;
 using TherapyCenter2.Models;
 using TherapyCenter2.Repositories.Interfaces;
@@ -11,11 +13,13 @@ namespace TherapyCenter2.Services.Implementations
 
         private readonly IUserRepository _userRepository;
         private readonly IJwtHelper _jwtHelper;
+        private readonly AppDbContext _context;
 
-        public AuthService(IUserRepository userRepository, IJwtHelper jwtHelper)
+        public AuthService(IUserRepository userRepository, IJwtHelper jwtHelper, AppDbContext context)
         {
             _userRepository = userRepository;
             _jwtHelper = jwtHelper;
+            _context = context;
         }
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
@@ -42,6 +46,20 @@ namespace TherapyCenter2.Services.Implementations
             };
 
             var createdUser = await _userRepository.AddUserAsync(user);
+
+            if (createdUser.Role == "Patient")
+            {
+                var patient = new Patient
+                {
+                    UserId = createdUser.UserId,               
+                    FirstName = createdUser.FirstName,
+                    LastName = createdUser.LastName,
+                    CreatedAt = DateTime.Now
+                };
+
+                await _context.Patients.AddAsync(patient);
+                await _context.SaveChangesAsync();
+            }
 
             return new AuthResponseDto
             {

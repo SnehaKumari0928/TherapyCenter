@@ -5,21 +5,20 @@ namespace TherapyCenter2.Models
 {
     public class Patient
     {
-
         public int PatientId { get; set; }
 
-        public int? GuardianId { get; set; }
+        public int UserId { get; set; }
 
-        [ForeignKey("GuardianId")]
-        public User? Guardian { get; set; }
-
-        [Required]
-        [MaxLength(50)]
-        public string FirstName { get; set; }
+        [ForeignKey("UserId")]
+        public User? User { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string LastName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(50)]
+        public string LastName { get; set; } = string.Empty;
 
         public DateTime? DateOfBirth { get; set; }
 
@@ -29,8 +28,6 @@ namespace TherapyCenter2.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        // 🔥 Navigation
         public ICollection<Appointment>? Appointments { get; set; }
-
     }
 }

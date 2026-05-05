@@ -10,6 +10,7 @@ const MyAppointments = () => {
     const load = async()=>{
         const res = await getMyAppointments();
         setData(res.data)
+        console.log(res.data)
     }
 
     useEffect(()=>{
@@ -22,7 +23,7 @@ const MyAppointments = () => {
  
       <div className="card-dark p-4">
  
-        <table className="table table-dark">
+        <table className="table">
           <thead>
             <tr>
               <th>Date</th>

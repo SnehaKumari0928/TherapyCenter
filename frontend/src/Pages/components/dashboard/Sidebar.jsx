@@ -58,10 +58,12 @@ const Sidebar = () => {
       {user?.role === "Doctor" && (
 
         <>
+          <NavLink className="nav-item" to="/doctor">Dashboard</NavLink>
 
-          <NavLink className="nav-item" to="/doctor">Appointments</NavLink>
 
-          <NavLink className="nav-item" to="#">Add Findings</NavLink>
+          <NavLink className="nav-item" to="/doctor/appointments">Appointments</NavLink>
+
+          <NavLink className="nav-item" to="/doctor/findings">Add Findings</NavLink>
 
         </>
 

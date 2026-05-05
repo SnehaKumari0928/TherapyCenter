@@ -30,3 +30,50 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hc
 GET {{TherapyCenter2_HostAddress}}/api/user
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaGFyc2hAdGhlcmFweS5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc3NzQzNzYxNSwiaXNzIjoiVGhlcmFweUNlbnRlciIsImF1ZCI6IlRoZXJhcHlDZW50ZXJVc2VycyJ9.Q6p7Oqt_kEqiZopE4JGIqJ5BXQVzeqMfqsymp2HFRso
 ###
+
+POST {{TherapyCenter2_HostAddress}}/api/doctor/createdoctor
+Content-Type: application/json
+
+{
+  //CreateDoctorDto
+
+}
+
+###
+
+POST {{TherapyCenter2_HostAddress}}/api/slot/createslot
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaGFyc2hAdGhlcmFweS5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc3Nzk1OTI4MCwiaXNzIjoiVGhlcmFweUNlbnRlciIsImF1ZCI6IlRoZXJhcHlDZW50ZXJVc2VycyJ9.h89CgHUgaQuHz-Zh4BTn2tYZUkVJgWfELBzTK8fCXvc
+ {
+  "doctorId": 1,
+  "date": "2026-05-06",
+  "startTime": "10:00:00",
+  "endTime": "11:00:00"
+}
+
+###
+
+GET {{TherapyCenter2_HostAddress}}/api/slot
+
+###
+
+@doctorId=1
+GET {{TherapyCenter2_HostAddress}}/api/slot/doctor/1?date=2026-05-04
+
+###
+
+POST {{TherapyCenter2_HostAddress}}/api/Slot
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaGFyc2hAdGhlcmFweS5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc3Nzk2MTc1NywiaXNzIjoiVGhlcmFweUNlbnRlciIsImF1ZCI6IlRoZXJhcHlDZW50ZXJVc2VycyJ9.RZqUFsmi0T9ExrFJ5Z8_rdbx1WMDSsldUvIBgC_piHw
+Content-Type: application/json
+{
+  "doctorId": 1,
+  "date": "2026-05-07",
+  "startTime": "10:00:00",
+  "endTime": "11:00:00"
+}
+
+
+###
+
+GET {{TherapyCenter2_HostAddress}}/api/appointment/my
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjI5IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoibmFpbmExQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlBhdGllbnQiLCJleHAiOjE3Nzc5NzAwMjQsImlzcyI6IlRoZXJhcHlDZW50ZXIiLCJhdWQiOiJUaGVyYXB5Q2VudGVyVXNlcnMifQ.pwQlydfP75t3yeWmbrF1MRdIm8WdcGCzaDLHPR0McDM
+###

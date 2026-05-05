@@ -68,7 +68,7 @@ namespace TherapyCenter.Tests.Services
             _appointmentRepoMock.Setup(x => x.AddAsync(It.IsAny<Appointment>()))
                 .ReturnsAsync(created);
 
-            var result = await _service.CreateAsync(dto);
+            var result = await _service.CreateAsync(dto,1);
 
             result.Should().NotBeNull();
             result.Status.Should().Be("Scheduled");
@@ -84,7 +84,7 @@ namespace TherapyCenter.Tests.Services
 
             var dto = new AppointmentCreateDto { SlotId = 1 };
 
-            Func<Task> act = async () => await _service.CreateAsync(dto);
+            Func<Task> act = async () => await _service.CreateAsync(dto,1);
 
             await act.Should().ThrowAsync<Exception>()
                 .WithMessage("Slot not found");
@@ -100,7 +100,7 @@ namespace TherapyCenter.Tests.Services
 
             var dto = new AppointmentCreateDto { SlotId = 1 };
 
-            Func<Task> act = async () => await _service.CreateAsync(dto);
+            Func<Task> act = async () => await _service.CreateAsync(dto,1);
 
             await act.Should().ThrowAsync<Exception>()
                 .WithMessage("Slot already booked");

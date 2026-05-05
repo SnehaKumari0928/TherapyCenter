@@ -12,7 +12,6 @@ using TherapyCenter2.Repositories.Implementations;
 using TherapyCenter2.Repositories.Interfaces;
 using TherapyCenter2.Services.Implementations;
 using TherapyCenter2.Services.Interfaces;
-using TherapyCenter2.Services.Payment;
 
 namespace TherapyCenter2
 {
@@ -96,6 +95,9 @@ namespace TherapyCenter2
             builder.Services.AddScoped<IAppointmentService, AppointmentService>();
             builder.Services.AddScoped<IUserService,UserService>();
 
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+
             builder.Services.AddControllers();
 
             builder.Services.AddEndpointsApiExplorer();
@@ -120,9 +122,10 @@ namespace TherapyCenter2
                     c.RoutePrefix = string.Empty; // makes Swagger UI at root /
                 });
             }
+            app.UseCors("MyCorsPolicy");
+
             app.UseHttpsRedirection();
 
-            app.UseCors("MyCorsPolicy");
 
             app.UseMiddleware<GlobalExceptionMiddleware>();
             app.UseAuthentication();

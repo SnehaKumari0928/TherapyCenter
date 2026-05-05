@@ -3,11 +3,12 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TherapyCenter2.Data;
+using TherapyCenter2.DTOs.Auth;
 using TherapyCenter2.Helper;
 using TherapyCenter2.Models;
 using TherapyCenter2.Repositories.Interfaces;
 using TherapyCenter2.Services.Implementations;
-using TherapyCenter2.DTOs.Auth;
 
 namespace TherapyCenter.Tests.Services
 {
@@ -17,15 +18,16 @@ namespace TherapyCenter.Tests.Services
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IJwtHelper> _jwtHelperMock;
         private readonly AuthService _authService;
-
+        private readonly Mock<AppDbContext> _contextMock;
         public AuthServiceTests()
         {
             _userRepositoryMock = new Mock<IUserRepository>();
             _jwtHelperMock = new Mock<IJwtHelper>();
-
+            _contextMock = new Mock<AppDbContext>();
             _authService = new AuthService(
                 _userRepositoryMock.Object,
-                _jwtHelperMock.Object
+                _jwtHelperMock.Object,
+                _contextMock.Object
             );
         }
 

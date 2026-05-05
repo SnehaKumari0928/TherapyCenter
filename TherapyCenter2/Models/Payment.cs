@@ -17,6 +17,7 @@
         public string Status { get; set; } = "Pending";
 
         public DateTime? PaidAt { get; set; }
+        public string? StripePaymentIntentId { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }

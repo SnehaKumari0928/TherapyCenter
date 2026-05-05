@@ -2,7 +2,7 @@
 import API from "./api";
 
 export const createSlot = (data)=>{
-    return API.post("/slot/createslot",data);
+    return API.post("/slot",data);
 }
 
 export const getslots = ()=>{
@@ -22,7 +22,9 @@ export const deleteSlot = (id)=>{
 }
 
 export const getSlotsByDoctor = (doctorId, date) => {
-  const formattedDate = new Date(date).toISOString().split("T")[0];
+  console.log("API HIT:", doctorId, date);
 
-  return API.get(`/doctor/${doctorId}?date=${formattedDate}`);
+  return API.get(`/slot/doctor/${doctorId}`, {
+    params: { date }
+  });
 };
