@@ -4,7 +4,7 @@ import Topbar from "./Topbar";
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="d-flex" style={{ minHeight: "100vh", background: "#000" }}>
+    <div className="d-flex" style={{ minHeight: "100vh", background: "#ffff" }}>
       <Sidebar />
 
       <div className="flex-grow-1">

@@ -7,7 +7,7 @@ const Topbar = () => {
 
   return (
     <div className="d-flex justify-content-between align-items-center px-4 py-3 border-bottom">
-      <h6 className="mb-0 text-light">{user?.role} Panel</h6>
+      <h6 className="mb-0 ">{user?.role} Panel</h6>
 
       <button className="btn btn-emerald" onClick={logout}>
         Logout

@@ -106,7 +106,7 @@ namespace TherapyCenter2.Controllers
         }
 
         [Authorize(Roles = "Doctor")]
-        [HttpGet("appointment")]
+        [HttpGet("doctor")]
         public async Task<IActionResult> GetDoctorAppointments()
         {
             var doctorIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);

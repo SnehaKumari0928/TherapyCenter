@@ -43,12 +43,7 @@ const PatientDashboard = () => {
           <p className="text-mute">Manage your therapy journey</p>
         </div>
  
-        <button
-          className="btn btn-emerald"
-          onClick={() => navigate("book-appointment")}
-        >
-          + Book Appointment
-        </button>
+       
       </div>
  
       {/* STATS */}

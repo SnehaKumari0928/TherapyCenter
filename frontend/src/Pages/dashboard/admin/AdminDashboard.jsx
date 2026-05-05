@@ -127,7 +127,7 @@ const AdminDashboard = () => {
 
  
 
-        <table className="table table-dark">
+        <table className="table">
 
           <thead>
 
