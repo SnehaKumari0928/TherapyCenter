@@ -40,3 +40,24 @@ Content-Type: application/json
 }
 
 ###
+
+POST {{TherapyCenter2_HostAddress}}/api/slot
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJoYXJzaEB0aGVyYXB5LmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzc3ODk5MzUzLCJpc3MiOiJUaGVyYXB5Q2VudGVyIiwiYXVkIjoiVGhlcmFweUNlbnRlclVzZXJzIn0.-f8No5E_BP22qgtUrC0YBxSUrnZkXJip1V6dB6-2Ydg
+Content-Type: application/json
+  {
+  "doctorId": 1,
+  "date": "2026-05-04",
+  "startTime": "10:00:00",
+  "endTime": "11:00:00"
+}
+
+###
+
+GET {{TherapyCenter2_HostAddress}}/api/slot
+
+###
+
+@doctorId=1
+GET {{TherapyCenter2_HostAddress}}/api/slot/doctor/1?date=2026-05-04
+
+###

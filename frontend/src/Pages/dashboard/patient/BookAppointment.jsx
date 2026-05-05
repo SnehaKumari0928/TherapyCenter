@@ -10,54 +10,63 @@ const BookAppointment = () => {
   const [doctors, setDoctors] = useState([]);
   const [therapies, setTherapies] = useState([]);
   const [slots, setSlots] = useState([]);
-  const [form, setForm] = useState( {doctorId: "",
-  therapyId: "",
-  date: "",
-  slotId: ""
-});
+
+  // ✅ IMPORTANT: initialize properly
+  const [form, setForm] = useState({
+    doctorId: "",
+    therapyId: "",
+    date: "",
+    slotId: ""
+  });
 
   const navigate = useNavigate();
 
+  // 🔹 Load doctors + therapies
   useEffect(() => {
-    load();
-    
+    const loadData = async () => {
+      try {
+        const doctorRes = await getDoctors();
+        const therapyRes = await getTherapies();
+
+        console.log("Doctors:", doctorRes?.data);
+        console.log("Therapies:", therapyRes?.data);
+
+        setDoctors(doctorRes?.data || []);
+        setTherapies(therapyRes?.data || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadData();
   }, []);
 
+  // 🔥 ONLY place where slots API is called
   useEffect(() => {
-  if (form.doctorId && form.date) {
-    console.log("CALLING API WITH:", form.doctorId, form.date);
-    fetchSlots(form.doctorId, form.date);
-  }
-}, [form.doctorId, form.date]);
+    if (form.doctorId && form.date) {
+      fetchSlots(form.doctorId, form.date);
+    }
+  }, [form.doctorId, form.date]);
 
-  const load = async () => {
-    const doctorRes = await getDoctors();
-    const therapyRes = await getTherapies();
-    console.log(doctorRes)
-    console.log(therapyRes);
-    
-
-    setDoctors(doctorRes?.data || []);
-    setTherapies(therapyRes?.data || []);
-  };
-
-  // ✅ FIXED SLOT FETCH
   const fetchSlots = async (doctorId, date) => {
+    try {
+      console.log("CALLING API WITH:", doctorId, date);
 
-    console.log("CALLING API WITH:", doctorId, date);
-    if (!doctorId || !date) return;
+      const res = await getSlotsByDoctor(doctorId, date);
 
-    const res = await getSlotsByDoctor(doctorId, date);
+      const available = res?.data?.filter((s) => !s.isBooked) || [];
 
-    // ✅ show only available slots
-    setSlots(res?.data?.filter(s => !s.isBooked) || []);
+      console.log("AVAILABLE SLOTS:", available);
 
-    console.log(res?.data?.filter(s => !s.isBooked)|| [])
+      setSlots(available);
+    } catch (err) {
+      console.error("Slot fetch error:", err);
+      setSlots([]);
+    }
   };
 
   return (
     <DashboardLayout>
-
       <h3 className="text-emerald mb-4">Book Appointment</h3>
 
       <div className="card-dark p-4">
@@ -65,18 +74,17 @@ const BookAppointment = () => {
         {/* DOCTOR */}
         <select
           className="form-select mb-3"
-           onChange={(e) => {
-    console.log("DATE SELECTED:", e.target.value);
-
-    setForm(prev => ({
-      ...prev,
-      date: e.target.value
-    }));
-  }}
+          value={form.doctorId}
+          onChange={(e) =>
+            setForm((prev) => ({
+              ...prev,
+              doctorId: e.target.value
+            }))
+          }
         >
-          <option>Select Doctor</option>
+          <option value="">Select Doctor</option>
           {doctors.map((d) => (
-            <option key={d.doctorId} value={d.doctorId}>
+            <option key={d.userId} value={d.userId}>
               Dr. {d.fullName}
             </option>
           ))}
@@ -85,11 +93,15 @@ const BookAppointment = () => {
         {/* THERAPY */}
         <select
           className="form-select mb-3"
+          value={form.therapyId}
           onChange={(e) =>
-            setForm({ ...form, therapyId: e.target.value })
+            setForm((prev) => ({
+              ...prev,
+              therapyId: e.target.value
+            }))
           }
         >
-          <option>Select Therapy</option>
+          <option value="">Select Therapy</option>
           {therapies.map((t) => (
             <option key={t.therapyId} value={t.therapyId}>
               {t.name}
@@ -101,11 +113,15 @@ const BookAppointment = () => {
         <input
           type="date"
           className="form-control mb-3"
+          value={form.date || ""}
           onChange={(e) => {
-            const date = e.target.value;
-            setForm((prev) => ({ ...prev, date }));
+            const value = e.target.value;
+            console.log("DATE SELECTED:", value);
 
-            fetchSlots(form.doctorId, date);
+            setForm((prev) => ({
+              ...prev,
+              date: value
+            }));
           }}
         />
 
@@ -122,7 +138,10 @@ const BookAppointment = () => {
                   }`}
                   style={{ cursor: "pointer" }}
                   onClick={() =>
-                    setForm({ ...form, slotId: s.slotId })
+                    setForm((prev) => ({
+                      ...prev,
+                      slotId: s.slotId
+                    }))
                   }
                 >
                   {s.startTime} - {s.endTime}
@@ -135,19 +154,22 @@ const BookAppointment = () => {
         {/* BUTTON */}
         <button
           className="btn btn-emerald w-100 mt-3"
+          disabled={
+            !form.doctorId || !form.therapyId || !form.date || !form.slotId
+          }
           onClick={async () => {
             try {
+              console.log("FINAL FORM:", form);
+
               const res = await createAppointment(form);
 
               const appointmentId = res?.data?.appointmentId;
 
               alert("Appointment booked successfully!");
 
-              // 🔥 REDIRECT TO PAYMENT
               navigate("/patient/payment", {
-                state: { appointmentId },
+                state: { appointmentId }
               });
-
             } catch (err) {
               console.error(err);
               alert("Booking failed");
@@ -158,7 +180,6 @@ const BookAppointment = () => {
         </button>
 
       </div>
-
     </DashboardLayout>
   );
 };

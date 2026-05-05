@@ -39,11 +39,12 @@ namespace TherapyCenter2.Controllers
             var result = await _slotService.GetSlotByIdAsync(id);
             return Ok(result);
         }
-
         [HttpGet("doctor/{doctorId}")]
-        public async Task<IActionResult> GetByDoctor(int doctorId, [FromQuery] DateOnly date)
+        public async Task<IActionResult> GetByDoctor(int doctorId, [FromQuery] string date)
         {
-            var result = await _slotService.GetSlotsByDoctorAsync(doctorId, date);
+            var parsedDate = DateOnly.Parse(date);
+
+            var result = await _slotService.GetSlotsByDoctorAsync(doctorId, parsedDate);
             return Ok(result);
         }
 
