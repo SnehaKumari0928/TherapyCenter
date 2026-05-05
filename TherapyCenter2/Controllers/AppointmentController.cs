@@ -114,16 +114,21 @@ namespace TherapyCenter2.Controllers
         [HttpGet("doctor")]
         public async Task<IActionResult> GetDoctorAppointments()
         {
-            var doctorIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
-            if(doctorIdClaim == null)
-            {
+            if (userIdClaim == null)
                 return Unauthorized("Invalid token");
-            }
 
-            int doctorId = int.Parse(doctorIdClaim.Value);
+            int userId = int.Parse(userIdClaim.Value);
 
-            var result = await _appointmentService.GetByDoctorIdAsync(doctorId);
+            var doctor = await _context.Doctors
+                .FirstOrDefaultAsync(d => d.UserId == userId);
+
+            if (doctor == null)
+                return BadRequest("Doctor not found");
+
+            var result = await _appointmentService.GetByDoctorIdAsync(doctor.DoctorId);
+            Console.WriteLine(doctor.DoctorId);
 
             return Ok(result);
         }
