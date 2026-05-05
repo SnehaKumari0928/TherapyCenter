@@ -5,7 +5,7 @@ namespace TherapyCenter2.Services.Interfaces
     public interface IAppointmentService
     {
 
-        Task<AppointmentResponseDto> CreateAsync(AppointmentCreateDto dto);
+        Task<AppointmentResponseDto> CreateAsync(AppointmentCreateDto dto, int patientId);
         Task<List<AppointmentResponseDto>> GetAllAsync();
         Task<List<AppointmentResponseDto>> GetByPatientIdAsync(int patientId);
         Task<AppointmentResponseDto> GetByIdAsync(int id);

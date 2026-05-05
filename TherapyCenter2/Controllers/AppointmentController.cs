@@ -24,7 +24,9 @@ namespace TherapyCenter2.Controllers
         [HttpPost("createappointment")]
         public async Task<IActionResult> Create([FromBody] AppointmentCreateDto dto)
         {
-            var result = await _appointmentService.CreateAsync(dto);
+            var userId = int.Parse(User.FindFirst("UserId").Value);
+
+            var result = await _appointmentService.CreateAsync(dto, userId);
             return Ok(result);
         }
 

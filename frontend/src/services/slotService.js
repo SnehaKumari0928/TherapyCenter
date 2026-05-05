@@ -22,5 +22,9 @@ export const deleteSlot = (id)=>{
 }
 
 export const getSlotsByDoctor = (doctorId, date) => {
-  return API.get(`/slot/doctor/${doctorId}?date=${date}`);
+  console.log("API HIT:", doctorId, date);
+
+  return API.get(`/slot/doctor/${doctorId}`, {
+    params: { date }
+  });
 };

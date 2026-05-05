@@ -18,7 +18,7 @@ namespace TherapyCenter2.Services.Implementations
             _slotRepository = slotRepository;
         }
 
-        public async Task<AppointmentResponseDto> CreateAsync(AppointmentCreateDto dto)
+        public async Task<AppointmentResponseDto> CreateAsync(AppointmentCreateDto dto, int patientId)
         {
             var slot = await _slotRepository.GetByIdAsync(dto.SlotId);
 
@@ -30,7 +30,7 @@ namespace TherapyCenter2.Services.Implementations
 
             var appointment = new Appointment
             {
-                PatientId = dto.PatientId,
+                PatientId = patientId,
                 DoctorId = dto.DoctorId,
                 TherapyId = dto.TherapyId,
                 ReceptionistId = dto.ReceptionistId == 0 ? null : dto.ReceptionistId,
