@@ -235,7 +235,7 @@ return (
 
 
 
-          // 🔥 REDIRECT TO PAYMENT
+         
 
           // navigate("/patient/payment", {
 
