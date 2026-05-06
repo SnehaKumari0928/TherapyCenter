@@ -24,11 +24,11 @@ export const deleteAppointment = (id)=>{
 }
 
 export const cancelAppointment = (id)=>{
-    return API.put(`/appointment/cancel/${id}`)
+    return API.put(`/appointment/${id}/cancel`)
 }
 
 export const completeAppointment = (id)=>{
-    return API.put(`/appointment/complete/${id}`)
+    return API.put(`/appointment/${id}/complete`)
 }
 
 export const getDoctorAppointment = ()=>{

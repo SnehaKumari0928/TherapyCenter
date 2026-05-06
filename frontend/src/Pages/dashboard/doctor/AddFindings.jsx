@@ -5,10 +5,10 @@ import { createDoctorFinding, updateDoctorFinding, deleteDoctorFinding , getByAp
 
 const AddFindings = () => {
 
-    const {id} = useParams();
+    const {appointmentId} = useParams();
 
     const [form, setForm] = useState({
-        appointmentId: id,
+        appointmentId: appointmentId,
         observations:"",
         recommendations:"",
         nextSessionDate:""
@@ -19,11 +19,11 @@ const AddFindings = () => {
 
     useEffect(()=>{
         loadFinding()
-    },[])
+    },[appointmentId])
 
     const loadFinding = async()=>{
         try{
-              const res = await getByAppointmentId(id)
+              const res = await getByAppointmentId(appointmentId)
 
               if(res.data){
                 setForm({

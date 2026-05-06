@@ -102,7 +102,7 @@ namespace TherapyCenter2.Controllers
             return Ok(new { message = "Appointment completed" });
         }
 
-        [Authorize(Roles = "Receptionist,Admin")]
+        [Authorize(Roles = "Receptionist,Admin,Patient")]
         [HttpPut("{id}/cancel")]
         public async Task<IActionResult> Cancel(int id)
         {

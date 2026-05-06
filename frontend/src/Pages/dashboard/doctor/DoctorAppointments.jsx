@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
-
-import { getDoctorAppointment, completeAppointment } from "../../../services/appointmentService";
+import {
+  getDoctorAppointment,
+  completeAppointment,
+} from "../../../services/appointmentService";
 import { getByAppointmentId } from "../../../services/doctorFindingsService";
 import { useNavigate } from "react-router-dom";
 
@@ -13,10 +15,10 @@ const DoctorAppointments = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    load();
+    loadAppointments();
   }, []);
 
-  const load = async () => {
+  const loadAppointments = async () => {
     try {
       setLoading(true);
 
@@ -25,6 +27,7 @@ const DoctorAppointments = () => {
 
       setAppointments(data);
 
+      // Fetch findings for each appointment
       const promises = data.map((a) =>
         getByAppointmentId(a.appointmentId)
           .then((f) => ({ id: a.appointmentId, data: f.data }))
@@ -52,10 +55,17 @@ const DoctorAppointments = () => {
   const handleComplete = async (id) => {
     try {
       await completeAppointment(id);
-      load(); // refresh
+      loadAppointments();
     } catch (err) {
+      console.error(err);
       alert("Failed to complete appointment");
     }
+  };
+
+  const handleNavigateToFinding = (appointment) => {
+    navigate(`/doctor/findings/${appointment.appointmentId}`, {
+      state: { appointment },
+    });
   };
 
   return (
@@ -72,13 +82,18 @@ const DoctorAppointments = () => {
         {appointments.map((a) => {
           const finding = findingsMap[a.appointmentId];
 
+          const isCompleted = a.status === "Completed";
+          const isCancelled = a.status === "Cancelled";
+
           return (
             <div key={a.appointmentId} className="col-lg-6 mb-4">
               <div className="card-dark p-4">
 
                 {/* HEADER */}
                 <div className="d-flex justify-content-between mb-2">
-                  <h6>Patient ID: {a.patientId}</h6>
+                  <h6>
+                    Patient: {a.patientName || `ID: ${a.patientId}`}
+                  </h6>
                   <span className="text-emerald">{a.status}</span>
                 </div>
 
@@ -95,16 +110,17 @@ const DoctorAppointments = () => {
                 {/* ACTIONS */}
                 <div className="d-flex justify-content-between">
 
+                  {/* Add / Edit Finding */}
                   <button
                     className="btn btn-emerald btn-sm"
-                    onClick={() =>
-                      navigate(`/doctor/finding/${a.appointmentId}`)
-                    }
+                    disabled={!isCompleted || isCancelled}
+                    onClick={() => handleNavigateToFinding(a)}
                   >
                     {finding ? "Edit Finding" : "Add Finding"}
                   </button>
 
-                  {a.status !== "Completed" && (
+                  {/* Complete Button */}
+                  {!isCompleted && !isCancelled && (
                     <button
                       className="btn btn-emerald-solid btn-sm"
                       onClick={() => handleComplete(a.appointmentId)}

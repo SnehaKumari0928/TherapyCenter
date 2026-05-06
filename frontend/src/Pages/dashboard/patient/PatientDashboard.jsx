@@ -16,7 +16,6 @@ const PatientDashboard = () => {
     loadData();
   }, []);
 
-  // 🔥 LOAD DATA
   const loadData = async () => {
     try {
       const apptRes = await getMyAppointments();
@@ -29,13 +28,11 @@ const PatientDashboard = () => {
     }
   };
 
-  // 🔥 MAP PAYMENTS
   const paymentMap = {};
   payments.forEach((p) => {
     paymentMap[p.appointmentId] = p;
   });
 
-  // 🔥 PAY HANDLER
   const handlePay = async (appointmentId) => {
     try {
       const res = await createOrder({ appointmentId });
@@ -52,7 +49,6 @@ const PatientDashboard = () => {
     }
   };
 
-  // 🔥 STATS
   const total = appointments.length;
   const upcoming = appointments.filter(a => a.status === "Scheduled").length;
   const completed = appointments.filter(a => a.status === "Completed").length;
@@ -62,7 +58,6 @@ const PatientDashboard = () => {
   return (
     <DashboardLayout>
 
-      {/* HEADER */}
       <div className="d-flex justify-content-between mb-4">
         <div>
           <h3 className="text-emerald">
@@ -76,7 +71,6 @@ const PatientDashboard = () => {
         
       </div>
 
-      {/* STATS */}
       <div className="row mb-4">
 
         <div className="col-md-4">
@@ -102,7 +96,6 @@ const PatientDashboard = () => {
 
       </div>
 
-      {/* RECENT APPOINTMENTS */}
       <div className="card-dark p-4">
 
         <div className="d-flex justify-content-between mb-3">

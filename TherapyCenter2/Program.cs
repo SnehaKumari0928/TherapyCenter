@@ -97,6 +97,8 @@ namespace TherapyCenter2
 
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IDoctorFindingRepository, DoctorFindingRepository>();
+            builder.Services.AddScoped<IDoctorFindingService, DoctorFindingService>();
 
             builder.Services.AddControllers();
 

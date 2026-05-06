@@ -37,7 +37,7 @@ const loadAppointments = async()=>{
 
       <div className="mb-4">
         <h2 className="text-emerald">
-          Welcome Dr. {user?.firstName || "Doctor"} 👨‍⚕️
+          Welcome Dr. {user?.firstName || "Doctor"} 
         </h2>
         <p className="text-mute">
           Manage your appointments and patient findings

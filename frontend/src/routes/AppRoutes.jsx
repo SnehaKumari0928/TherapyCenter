@@ -96,7 +96,7 @@ function AppRoutes() {
         />
 
         <Route
-          path="/doctor/findings"
+          path="/doctor/findings/:appointmentId"
           element={
             <ProtectedRoute roles={["Doctor"]}>
               <AddFindings />
