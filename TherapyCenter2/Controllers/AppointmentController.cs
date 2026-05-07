@@ -34,7 +34,7 @@ namespace TherapyCenter2.Controllers
 
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
 
-           var  PatientId = patient.PatientId; // CORRECT
+           var  PatientId = patient.PatientId; 
             var result = await _appointmentService.CreateAsync(dto, PatientId);
             return Ok(result);
         }
