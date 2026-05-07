@@ -23,6 +23,9 @@ namespace TherapyCenter2.Models
         [ForeignKey("ReceptionistId")]
         public User Receptionist { get; set; }
 
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+
         public DateOnly AppointmentDate { get; set; }
 
         public TimeOnly StartTime { get; set; }

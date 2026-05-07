@@ -20,6 +20,8 @@ import CreateSlot from "../Pages/dashboard/admin/CreateSlot";
 import AllAppointments from "../Pages/dashboard/receptionist/AllAppointments";
 import DoctorAppointments from "../Pages/dashboard/doctor/DoctorAppointments";
 import AddFindings from "../Pages/dashboard/doctor/AddFindings";
+import ReceptionistBookAppointment from "../Pages/dashboard/receptionist/BookAppointments";
+import DoctorAvailability from "../Pages/dashboard/receptionist/DoctorAvailability";
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -113,11 +115,19 @@ function AppRoutes() {
           }
         />
 
-        <Route
+ <Route
           path="/receptionist/book"
           element={
             <ProtectedRoute roles={["Receptionist"]}>
-              <BookAppointments />
+              <ReceptionistBookAppointment />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/receptionist/available_doctors"
+          element={
+            <ProtectedRoute roles={["Receptionist"]}>
+              <DoctorAvailability />
             </ProtectedRoute>
           }
         />

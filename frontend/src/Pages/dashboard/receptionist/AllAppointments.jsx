@@ -8,10 +8,20 @@ const AllAppointments = () => {
     load();
   }, []);
 
-  const load = async () => {
-    const res = await getAllAppointments();
-    setAppointments(res.data);
-  };
+ const load = async () => {
+
+  const res = await getAllAppointments();
+  console.log(res.data);
+  
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const filteredAppointments = res.data.filter(
+    a => a.receptionistId === Number(user.userId)
+  );
+
+  setAppointments(filteredAppointments);
+};
 
   return (
     <DashboardLayout>

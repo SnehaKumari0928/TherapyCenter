@@ -31,6 +31,8 @@ namespace TherapyCenter2.Services.Implementations
             var appointment = new Appointment
             {
                 PatientId = patientId,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
                 DoctorId = dto.DoctorId,
                 TherapyId = dto.TherapyId,
                 ReceptionistId = dto.ReceptionistId == 0 ? null : dto.ReceptionistId,

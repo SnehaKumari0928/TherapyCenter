@@ -40,7 +40,7 @@ namespace TherapyCenter2.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Receptionist")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

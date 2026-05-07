@@ -21,7 +21,7 @@ function Home() {
  
           <div className="collapse navbar-collapse" id="nav">
             <ul className="navbar-nav ms-auto align-items-center">
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link className="nav-link" to="/">Home</Link>
               </li>
               <li className="nav-item">
@@ -29,11 +29,14 @@ function Home() {
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/about">About</Link>
-              </li>
-              <li className="nav-item ms-3">
+              </li> */}
+              <li className="nav-item">
                 <Link className="btn btn-emerald" to="/login">
                   Login
                 </Link>
+                
+              </li>
+              <li className="nav-item ">
                 <Link className="btn btn-emerald " to="/register">
                   Register
                 </Link>

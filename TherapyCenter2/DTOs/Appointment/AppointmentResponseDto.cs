@@ -9,6 +9,7 @@
         public int DoctorId { get; set; }
 
         public int TherapyId { get; set; }
+        public int ?ReceptionistId{ get;set;}
 
         public DateOnly AppointmentDate { get; set; }
 

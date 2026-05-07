@@ -4,8 +4,11 @@ namespace TherapyCenter2.DTOs.Appointment
 {
     public class AppointmentCreateDto
     {
-        [Required]
-        public int PatientId { get; set; }
+        
+        public int? PatientId { get; set; }
+
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
 
         [Required]
         public int DoctorId { get; set; }

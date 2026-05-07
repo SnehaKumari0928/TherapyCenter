@@ -82,6 +82,7 @@ const Sidebar = () => {
           <NavLink className="nav-item" to="/receptionist/book">Book Appointment</NavLink>
 
           <NavLink className="nav-item" to="/receptionist/appointments">All Appointments</NavLink>
+          <NavLink className="nav-item" to="/receptionist/available_doctors">Available Doctors</NavLink>
 
         </>
 
