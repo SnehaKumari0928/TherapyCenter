@@ -46,5 +46,19 @@ namespace TherapyCenter2.Repositories.Implementations
             _context.Doctors.Remove(doctor);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Doctor?> GetByUserIdAsync(int userId)
+        {
+            return await _context.Doctors
+                .Include(d => d.User)
+                .FirstOrDefaultAsync(d => d.UserId == userId);
+        }
+
+        public async Task<List<Doctor>> GetAllWithUserAsync()
+        {
+            return await _context.Doctors
+                .Include(d => d.User)
+                .ToListAsync();
+        }
     }
 }

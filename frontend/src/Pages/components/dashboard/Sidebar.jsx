@@ -64,6 +64,7 @@ const Sidebar = () => {
           <NavLink className="nav-item" to="/doctor/appointments">Appointments</NavLink>
 
           <NavLink className="nav-item" to="/doctor/appointments">Add Findings</NavLink>
+          <NavLink className="nav-item" to="/doctor/generate">Create Slots</NavLink>
 
         </>
 

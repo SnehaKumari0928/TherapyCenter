@@ -8,10 +8,14 @@ namespace TherapyCenter2.Services.Implementations
     public class SlotService: ISlotService
     {
         private readonly ISlotRepository _slotRepository;
-
-        public SlotService(ISlotRepository slotRepository)
+        private readonly IDoctorRepository _doctorRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
+        public SlotService(ISlotRepository slotRepository, IDoctorRepository doctorRepository,
+            IAppointmentRepository appointmentRepository)
         {
             _slotRepository = slotRepository;
+            _doctorRepository = doctorRepository;
+            _appointmentRepository = appointmentRepository;
         }
 
         public async Task<SlotResponseDto> CreateSlotAsync(CreateSlotDto dto)
@@ -42,7 +46,57 @@ namespace TherapyCenter2.Services.Implementations
 
             return MapSlotResponse(created);
         }
+        public async Task CreateBulkSlotsAsync(CreateBulkSlotDto dto, int doctorId)
+        {
+            if (dto.DurationMinutes <= 0)
+                throw new ArgumentException("Duration must be greater than 0");
 
+            if (dto.StartTime >= dto.EndTime)
+                throw new ArgumentException("StartTime must be less than EndTime");
+
+            // 1️⃣ Fetch all existing slots in ONE DB call
+            var existingSlots = await _slotRepository
+                .GetByDoctorAndDateAsync(doctorId, dto.Date);
+
+            // Convert to fast lookup set (for O(1) checks)
+            var existingSet = existingSlots
+                .Select(s => (s.StartTime, s.EndTime))
+                .ToHashSet();
+
+            var newSlots = new List<Slot>();
+
+            var current = dto.StartTime;
+
+            // 2️⃣ Generate slots in memory
+            while (current < dto.EndTime)
+            {
+                var next = current.AddMinutes(dto.DurationMinutes);
+
+                if (next > dto.EndTime)
+                    break;
+
+                // 3️⃣ Skip duplicates in memory (NO DB CALL)
+                if (!existingSet.Contains((current, next)))
+                {
+                    newSlots.Add(new Slot
+                    {
+                        DoctorId = doctorId,
+                        Date = dto.Date,
+                        StartTime = current,
+                        EndTime = next,
+                        IsBooked = false
+                    });
+                }
+
+                current = next;
+            }
+
+            // 4️⃣ Bulk insert in ONE DB call
+            if (newSlots.Any())
+            {
+                await _slotRepository.BulkInsertAsync(newSlots);
+            }
+        }
         public async Task<List<SlotResponseDto>> GetAllSlotsAsync()
         {
             var slots = await _slotRepository.GetAllAsync();
@@ -110,6 +164,92 @@ namespace TherapyCenter2.Services.Implementations
             await _slotRepository.DeleteAsync(slot);
         }
 
+        public async Task<List<DoctorSlotDto>> GetGeneratedSlotsByDoctorAsync(int doctorId, DateOnly date)
+        {
+            var doctor = await _doctorRepository.GetByIdAsync(doctorId);
+
+            if (doctor == null)
+                throw new Exception("Doctor not found");
+
+
+            if (doctor.AvailableDays == null ||
+                !IsDoctorAvailableOnDate(doctor.AvailableDays, date))
+                return new List<DoctorSlotDto>();
+
+            var slots = new List<DoctorSlotDto>();
+
+            var start = doctor.StartTime!.Value;
+            var end = doctor.EndTime!.Value;
+
+
+            if (start >= end)
+                return new List<DoctorSlotDto>();
+
+
+            while (start < end)
+            {
+                var next = start.AddMinutes(30);
+
+                slots.Add(new DoctorSlotDto
+                {
+                    StartTime = start,
+                    EndTime = next,
+                    Status = "Available"
+                });
+
+                start = next;
+            }
+
+            var appointments = await _appointmentRepository
+                .GetByDoctorAndDateAsync(doctorId, date);
+
+
+            foreach (var slot in slots)
+            {
+                var isBooked = appointments.Any(a =>
+                    a.StartTime == slot.StartTime &&
+                    a.EndTime == slot.EndTime
+                );
+
+                if (isBooked)
+                    slot.Status = "Booked";
+            }
+
+            return slots;
+        }
+
+        private bool IsDoctorAvailableOnDate(string availableDays, DateOnly date)
+        {
+            var day = date.DayOfWeek;
+
+            if (availableDays.Contains("-"))
+            {
+                var parts = availableDays.Split('-');
+
+                var start = ParseDay(parts[0]);
+                var end = ParseDay(parts[1]);
+
+                return day >= start && day <= end;
+            }
+
+            return ParseDay(availableDays) == day;
+        }
+
+        private DayOfWeek ParseDay(string day)
+        {
+            return day.Trim().ToLower() switch
+            {
+                "mon" => DayOfWeek.Monday,
+                "tue" => DayOfWeek.Tuesday,
+                "wed" => DayOfWeek.Wednesday,
+                "thu" => DayOfWeek.Thursday,
+                "fri" => DayOfWeek.Friday,
+                "sat" => DayOfWeek.Saturday,
+                "sun" => DayOfWeek.Sunday,
+                _ => throw new Exception("Invalid day")
+            };
+        }
+
         private static SlotResponseDto MapSlotResponse(Slot slot)
         {
             return new SlotResponseDto
@@ -122,5 +262,8 @@ namespace TherapyCenter2.Services.Implementations
                 IsBooked = slot.IsBooked
             };
         }
+
+
+       
     }
 }

@@ -1,4 +1,5 @@
-﻿using TherapyCenter2.DTOs.Appointment;
+﻿using System.Security.Claims;
+using TherapyCenter2.DTOs.Appointment;
 using TherapyCenter2.Models;
 using TherapyCenter2.Repositories.Interfaces;
 using TherapyCenter2.Services.Interfaces;
@@ -10,12 +11,20 @@ namespace TherapyCenter2.Services.Implementations
 
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly ISlotRepository _slotRepository;
+        private readonly IPatientRepository _patientRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ITherapyRepository _therapyRepository;
 
         public AppointmentService(IAppointmentRepository appointmentRepository,
-                                  ISlotRepository slotRepository)
+                                  ISlotRepository slotRepository, IPatientRepository patientRepository,
+            IHttpContextAccessor httpContextAccessor,
+            ITherapyRepository therapyRepository)
         {
             _appointmentRepository = appointmentRepository;
             _slotRepository = slotRepository;
+             _patientRepository = patientRepository;
+            _httpContextAccessor = httpContextAccessor;
+            _therapyRepository = therapyRepository; 
         }
 
         public async Task<AppointmentResponseDto> CreateAsync(AppointmentCreateDto dto, int patientId)
@@ -157,5 +166,82 @@ namespace TherapyCenter2.Services.Implementations
             ).ToList();
         }
 
+        public async Task<AppointmentResponseDto> CreateWalkInAsync(WalkInAppointmentDto dto)
+        {
+            var existingAppointments = await _appointmentRepository
+                 .GetByDoctorAndDateAsync(dto.DoctorId, dto.Date);
+
+            var isBooked = existingAppointments.Any(a =>
+                a.StartTime == dto.StartTime &&
+                a.EndTime == dto.EndTime);
+
+            if (isBooked)
+                throw new Exception("Slot already booked");
+
+
+            var patient = new Patient
+            {
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                CreatedAt = DateTime.Now
+            };
+
+            await _patientRepository.AddAsync(patient);
+
+
+            var appointment = new Appointment
+            {
+                PatientId = patient.PatientId,
+                DoctorId = dto.DoctorId,
+                TherapyId = dto.TherapyId,
+                ReceptionistId = null,
+                AppointmentDate = dto.Date,
+                StartTime = dto.StartTime,
+                EndTime = dto.EndTime,
+                Status = "Scheduled",
+                Notes = dto.Notes
+            };
+
+            var created = await _appointmentRepository.AddAsync(appointment);
+
+            return MapAppointmentResponse(created);
+        }
+
+
+        public async Task<List<AppointmentResponseDto>> GetAppointmentsForGuardianAsync()
+        {
+
+            var user = _httpContextAccessor.HttpContext?.User;
+
+            if (user == null)
+                throw new Exception("User not authenticated");
+
+            var claim = user.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim == null)
+                throw new Exception("UserId not found in token");
+
+            var guardianId = int.Parse(claim.Value);
+
+
+
+
+            var patients = await _patientRepository.GetByGuardianIdAsync(guardianId);
+
+            if (patients == null || !patients.Any())
+                return new List<AppointmentResponseDto>();
+
+            var patientIds = patients.Select(p => p.PatientId).ToList();
+
+
+            var appointments = await _appointmentRepository.GetAllAsync();
+
+            var result = appointments
+                .Where(a => patientIds.Contains(a.PatientId))
+                .Select(MapAppointmentResponse)
+                .ToList();
+
+            return result;
+        }
     }
 }

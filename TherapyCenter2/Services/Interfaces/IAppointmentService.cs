@@ -11,9 +11,12 @@ namespace TherapyCenter2.Services.Interfaces
         Task<AppointmentResponseDto> GetByIdAsync(int id);
         Task<AppointmentResponseDto> UpdateAsync(int id, AppointmentUpdateDto dto);
         Task DeleteAsync(int id);
+        Task<AppointmentResponseDto> CreateWalkInAsync(WalkInAppointmentDto dto);
 
         Task CompleteAsync(int id);
         Task CancelAsync(int id);
         Task<List<AppointmentResponseDto>> GetByDoctorIdAsync(int doctorId);
+
+        Task<List<AppointmentResponseDto>> GetAppointmentsForGuardianAsync();
     }
 }

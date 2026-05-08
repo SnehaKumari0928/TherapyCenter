@@ -12,5 +12,6 @@ namespace TherapyCenter2.Repositories.Interfaces
         Task<User> UpdateUserAsync(User user);
 
         Task<bool> DeleteAsync(User user);
+        Task<List<User>> GetByRoleAsync(string role);
     }
 }

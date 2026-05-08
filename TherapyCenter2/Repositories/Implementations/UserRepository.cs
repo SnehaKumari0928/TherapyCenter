@@ -52,5 +52,12 @@ namespace TherapyCenter2.Repositories.Implementations
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<User>> GetByRoleAsync(string role)
+        {
+            return await _context.Users.Where(u => u.Role == role)
+                .ToListAsync();
+        }
+
     }
 }

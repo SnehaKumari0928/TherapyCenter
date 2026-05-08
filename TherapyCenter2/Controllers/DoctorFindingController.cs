@@ -11,7 +11,6 @@ namespace TherapyCenter2.Controllers
     [ApiController]
     public class DoctorFindingController : ControllerBase
     {
-
         private readonly IDoctorFindingService _service;
 
         public DoctorFindingController(IDoctorFindingService service)
@@ -20,7 +19,7 @@ namespace TherapyCenter2.Controllers
         }
 
         [Authorize(Roles = "Doctor")]
-        [HttpPost("create_finding")]
+        [HttpPost]
         public async Task<IActionResult> Create(CreateDoctorFindingDto dto)
         {
             var result = await _service.CreateAsync(dto);
@@ -34,23 +33,6 @@ namespace TherapyCenter2.Controllers
             return Ok(result);
         }
 
-
-        [Authorize(Roles = "Patient,Guardian")]
-        [HttpGet("my-report")]
-        public async Task<IActionResult> GetMyReports()
-        {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-
-            if(userId == null)
-            {
-                return Unauthorized("Invalid token");
-            }
-
-            var result = await _service.GetByPatientIdAsync(userId);
-
-            return Ok(result);
-        }
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -61,8 +43,16 @@ namespace TherapyCenter2.Controllers
         [HttpGet("appointment/{appointmentId}")]
         public async Task<IActionResult> GetByAppointment(int appointmentId)
         {
-            var result = await _service.GetByAppointmentAsync(appointmentId);
-            return Ok(result);
+            try
+            {
+                var result = await _service.GetByAppointmentAsync(appointmentId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return Ok(new List<DoctorFindingResponseDto>());
+            }
         }
 
         [Authorize(Roles = "Doctor")]
@@ -81,4 +71,4 @@ namespace TherapyCenter2.Controllers
             return Ok(new { message = "Deleted successfully" });
         }
     }
-}
+    }

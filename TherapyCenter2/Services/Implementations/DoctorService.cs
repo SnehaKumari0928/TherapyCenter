@@ -113,5 +113,25 @@ namespace TherapyCenter2.Services.Implementations
                 EndTime = doctor.EndTime ?? default
             };
         }
+
+        public async Task<List<DoctorListDto>> GetDoctorsForPatientAsync()
+        {
+            var doctors = await _doctorRepository.GetAllWithUserAsync();
+
+            return doctors.Select(d => new DoctorListDto
+            {
+                DoctorId = d.DoctorId,
+                FullName = $"{d.User.FirstName} {d.User.LastName}",
+                Email = d.User.Email,
+                Specialization = d.Specialization,
+                AvailableDays = d.AvailableDays,
+                StartTime = d.StartTime.HasValue
+                ? d.StartTime.Value.ToString("HH:mm")
+                : "-",
+                EndTime = d.EndTime.HasValue
+                ? d.EndTime.Value.ToString("HH:mm")
+                : "-"
+            }).ToList();
+        }
     }
 }

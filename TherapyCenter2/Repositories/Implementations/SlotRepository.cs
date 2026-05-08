@@ -34,6 +34,21 @@ namespace TherapyCenter2.Repositories.Implementations
                 .ToListAsync();
         }
 
+        public async Task<bool> SlotExistsAsync(
+    int doctorId,
+    DateOnly date,
+    TimeOnly start,
+    TimeOnly end
+)
+        {
+            return await _context.Slots.AnyAsync(s =>
+                s.DoctorId == doctorId &&
+                s.Date == date &&
+                s.StartTime == start &&
+                s.EndTime == end
+            );
+        }
+
         public async Task<Slot?> GetByIdAsync(int id)
         {
             return await _context.Slots.FindAsync(id);
@@ -48,6 +63,12 @@ namespace TherapyCenter2.Repositories.Implementations
         public async Task DeleteAsync(Slot slot)
         {
             _context.Slots.Remove(slot);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task BulkInsertAsync(List<Slot> slots)
+        {
+            await _context.Slots.AddRangeAsync(slots);
             await _context.SaveChangesAsync();
         }
     }

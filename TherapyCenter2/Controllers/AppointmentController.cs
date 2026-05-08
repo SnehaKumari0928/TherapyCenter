@@ -6,6 +6,7 @@ using System.Security.Claims;
 using TherapyCenter2.Data;
 using TherapyCenter2.DTOs.Appointment;
 using TherapyCenter2.Models;
+using TherapyCenter2.Repositories.Interfaces;
 using TherapyCenter2.Services.Interfaces;
 
 namespace TherapyCenter2.Controllers
@@ -17,14 +18,18 @@ namespace TherapyCenter2.Controllers
 
         private readonly IAppointmentService _appointmentService;
         private readonly AppDbContext _context;
-        public AppointmentController(IAppointmentService appointmentService, AppDbContext context)
+        private readonly IDoctorRepository _doctorRepository;
+        private readonly IPatientRepository _patientRepository;
+        public AppointmentController(IAppointmentService appointmentService, AppDbContext context, IDoctorRepository doctorRepository, IPatientRepository patientRepository)
         {
             _appointmentService = appointmentService;
             _context = context;
+            _doctorRepository = doctorRepository;
+            _patientRepository = patientRepository;
         }
 
 
-        [Authorize(Roles = "Patient,Receptionist")]
+        [Authorize(Roles = "Patient,Guardian,Receptionist")]
         [HttpPost("createappointment")]
         public async Task<IActionResult> Create([FromBody] AppointmentCreateDto dto)
         {
@@ -132,5 +137,28 @@ namespace TherapyCenter2.Controllers
 
             return Ok(result);
         }
+
+
+
+        [Authorize(Roles = "Receptionist")]
+        [HttpPost("walkin")]
+        public async Task<IActionResult> CreateWalkIn([FromBody] WalkInAppointmentDto dto)
+        {
+            try
+            {
+                var result = await _appointmentService.CreateWalkInAsync(dto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+      
+
+
+
     }
 }

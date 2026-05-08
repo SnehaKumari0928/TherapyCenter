@@ -10,5 +10,6 @@ namespace TherapyCenter2.Services.Interfaces
         Task<DoctorResponseDto> GetDoctorByIdAsync(int id);
         Task<DoctorResponseDto> UpdateDoctorAsync(int id, UpdateDoctorDto dto);
         Task DeleteDoctorAsync(int id);
+        Task<List<DoctorListDto>> GetDoctorsForPatientAsync();
     }
 }

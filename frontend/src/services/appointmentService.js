@@ -35,3 +35,7 @@ export const getDoctorAppointment = ()=>{
     console.log("DOCTOR ENDPOINT HIT");
     return API.get("/appointment/doctor")
 }
+
+export const walkIn = (data)=>{
+      return API.post("/appointment/walkin",data);
+}

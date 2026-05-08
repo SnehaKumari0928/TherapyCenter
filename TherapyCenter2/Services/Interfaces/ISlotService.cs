@@ -10,5 +10,10 @@ namespace TherapyCenter2.Services.Interfaces
         Task<SlotResponseDto> GetSlotByIdAsync(int id);
         Task<SlotResponseDto> UpdateSlotAsync(int id, UpdateSlotDto dto);
         Task DeleteSlotAsync(int id);
+        Task CreateBulkSlotsAsync(
+    CreateBulkSlotDto dto,
+    int doctorId
+);
+        Task<List<DoctorSlotDto>> GetGeneratedSlotsByDoctorAsync(int doctorId, DateOnly date);
     }
 }

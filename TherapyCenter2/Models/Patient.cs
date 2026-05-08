@@ -3,31 +3,32 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TherapyCenter2.Models
 {
-    public class Patient
-    {
-        public int PatientId { get; set; }
+  
+        public class Patient
+        {
+            public int PatientId { get; set; }
 
         public int UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public User? User { get; set; }
+        public User User { get; set; }
 
         [Required]
-        [MaxLength(50)]
-        public string FirstName { get; set; } = string.Empty;
+            [MaxLength(50)]
+            public string FirstName { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string LastName { get; set; } = string.Empty;
+            [Required]
+            [MaxLength(50)]
+            public string LastName { get; set; }
 
-        public DateTime? DateOfBirth { get; set; }
+            public DateTime? DateOfBirth { get; set; }
 
-        public string? Gender { get; set; }
+            public string? Gender { get; set; }
 
-        public string? MedicalHistory { get; set; }
+            public string? MedicalHistory { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+            public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public ICollection<Appointment>? Appointments { get; set; }
-    }
+            public ICollection<Appointment>? Appointments { get; set; }
+        }
 }

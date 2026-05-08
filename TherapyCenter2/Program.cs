@@ -99,9 +99,10 @@ namespace TherapyCenter2
             builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services.AddScoped<IDoctorFindingRepository, DoctorFindingRepository>();
             builder.Services.AddScoped<IDoctorFindingService, DoctorFindingService>();
+            builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
             builder.Services.AddControllers();
-
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

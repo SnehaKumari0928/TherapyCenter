@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TherapyCenter2.Data;
 
@@ -11,9 +12,11 @@ using TherapyCenter2.Data;
 namespace TherapyCenter2.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260507235050_actual-migration")]
+    partial class actualmigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,6 +171,9 @@ namespace TherapyCenter2.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("GuardianId")
+                        .HasColumnType("int");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -176,12 +182,9 @@ namespace TherapyCenter2.Migrations
                     b.Property<string>("MedicalHistory")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("PatientId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("GuardianId");
 
                     b.ToTable("Patients");
                 });
@@ -388,13 +391,12 @@ namespace TherapyCenter2.Migrations
 
             modelBuilder.Entity("TherapyCenter2.Models.Patient", b =>
                 {
-                    b.HasOne("TherapyCenter2.Models.User", "User")
+                    b.HasOne("TherapyCenter2.Models.User", "Guardian")
                         .WithMany("Patients")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("GuardianId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("User");
+                    b.Navigation("Guardian");
                 });
 
             modelBuilder.Entity("TherapyCenter2.Models.Payment", b =>

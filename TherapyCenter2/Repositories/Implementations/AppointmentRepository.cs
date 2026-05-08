@@ -57,5 +57,12 @@ namespace TherapyCenter2.Repositories.Implementations
                 .ToListAsync();
         }
 
+        public async Task<List<Appointment>> GetByDoctorAndDateAsync(int doctorId, DateOnly date)
+        {
+            return await _context.Appointments
+                .Where(a => a.DoctorId == doctorId && a.AppointmentDate == date)
+                .ToListAsync();
+        }
+
     }
 }

@@ -11,5 +11,7 @@ namespace TherapyCenter2.Repositories.Interfaces
         Task<Slot?> GetByIdAsync(int id);
         Task UpdateAsync(Slot slot);
         Task DeleteAsync(Slot slot);
+        Task<bool> SlotExistsAsync(int doctorId,DateOnly date,TimeOnly start,TimeOnly end);
+        Task BulkInsertAsync(List<Slot> slots);
     }
 }

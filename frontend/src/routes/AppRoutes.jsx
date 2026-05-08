@@ -21,7 +21,7 @@ import AllAppointments from "../Pages/dashboard/receptionist/AllAppointments";
 import DoctorAppointments from "../Pages/dashboard/doctor/DoctorAppointments";
 import AddFindings from "../Pages/dashboard/doctor/AddFindings";
 import ReceptionistBookAppointment from "../Pages/dashboard/receptionist/BookAppointments";
-import DoctorAvailability from "../Pages/dashboard/receptionist/DoctorAvailability";
+import GenerateSlots from "../Pages/dashboard/doctor/GenerateSlots";
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -105,6 +105,14 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+          <Route
+          path="/doctor/generate"
+          element={
+            <ProtectedRoute roles={["Doctor"]}>
+              <GenerateSlots />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/receptionist"
@@ -123,14 +131,7 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/receptionist/available_doctors"
-          element={
-            <ProtectedRoute roles={["Receptionist"]}>
-              <DoctorAvailability />
-            </ProtectedRoute>
-          }
-        />
+      
 
          <Route
           path="/receptionist/appointments"

@@ -28,3 +28,7 @@ export const getSlotsByDoctor = (doctorId, date) => {
     params: { date }
   });
 };
+
+export const generateSlot = (data)=>{
+    return API.post("/slot/bulk",data)
+}
