@@ -6,7 +6,6 @@ import DashboardLayout from "../../components/dashboard/DashboardLayout";
 import { getDoctors } from "../../../services/doctorService";
 import { getTherapies } from "../../../services/therapyService";
 import { getSlotsByDoctor } from "../../../services/slotService";
-
 import API from "../../../services/api";
 
 const getTodayDate = () =>
@@ -172,7 +171,10 @@ const BookAppointment = () => {
       setSlots(res.data || []);
     } catch (err) {
       console.error(err);
-
+         console.log(err)
+           console.log("ERROR DATA:", err.response?.data);
+  console.log("ERROR STATUS:", err.response?.status);
+  console.log("FULL ERROR:", err);
       setError(
         err?.response?.data?.message ||
           "Booking failed"

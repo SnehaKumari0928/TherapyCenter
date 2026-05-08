@@ -168,17 +168,17 @@ namespace TherapyCenter2.Services.Implementations
 
         public async Task<AppointmentResponseDto> CreateWalkInAsync(WalkInAppointmentDto dto)
         {
-            var existingAppointments = await _appointmentRepository
-                 .GetByDoctorAndDateAsync(dto.DoctorId, dto.Date);
+            // GET SLOT
+            var slot = await _slotRepository.GetByIdAsync(dto.SlotId);
 
-            var isBooked = existingAppointments.Any(a =>
-                a.StartTime == dto.StartTime &&
-                a.EndTime == dto.EndTime);
+            if (slot == null)
+                throw new Exception("Slot not found");
 
-            if (isBooked)
+            // CHECK IF SLOT ALREADY BOOKED
+            if (slot.IsBooked)
                 throw new Exception("Slot already booked");
 
-
+            // CREATE PATIENT
             var patient = new Patient
             {
                 FirstName = dto.FirstName,
@@ -188,25 +188,41 @@ namespace TherapyCenter2.Services.Implementations
 
             await _patientRepository.AddAsync(patient);
 
+            // GET RECEPTIONIST ID FROM TOKEN
+            var userIdClaim = _httpContextAccessor.HttpContext?
+                .User
+                .FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+            if (string.IsNullOrEmpty(userIdClaim))
+                throw new Exception("Invalid token");
+
+            int receptionistId = int.Parse(userIdClaim);
+
+            // CREATE APPOINTMENT USING SLOT DATA
             var appointment = new Appointment
             {
                 PatientId = patient.PatientId,
                 DoctorId = dto.DoctorId,
                 TherapyId = dto.TherapyId,
-                ReceptionistId = null,
-                AppointmentDate = dto.Date,
-                StartTime = dto.StartTime,
-                EndTime = dto.EndTime,
+                ReceptionistId = receptionistId,
+
+                AppointmentDate = slot.Date,
+                StartTime = slot.StartTime,
+                EndTime = slot.EndTime,
+
                 Status = "Scheduled",
                 Notes = dto.Notes
             };
 
             var created = await _appointmentRepository.AddAsync(appointment);
 
+            // MARK SLOT AS BOOKED
+            slot.IsBooked = true;
+
+            await _slotRepository.UpdateAsync(slot);
+
             return MapAppointmentResponse(created);
         }
-
 
         public async Task<List<AppointmentResponseDto>> GetAppointmentsForGuardianAsync()
         {

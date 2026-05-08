@@ -5,6 +5,7 @@
         public int DoctorId { get; set; }
 
         public int TherapyId { get; set; }
+        public int SlotId { get; set; }
 
         public string FirstName { get; set; }
 

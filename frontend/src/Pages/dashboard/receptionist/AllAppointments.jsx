@@ -21,6 +21,8 @@ const AllAppointments = () => {
   );
 
   setAppointments(filteredAppointments);
+  console.log((filteredAppointments));
+  
 };
 
   return (
