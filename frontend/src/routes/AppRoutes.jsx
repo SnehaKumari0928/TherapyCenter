@@ -16,7 +16,6 @@ import Users from "../Pages/dashboard/admin/Users";
 import DoctorDashboard from "../Pages/dashboard/doctor/DoctorDashboard";
 import ManageDoctors from "../Pages/dashboard/admin/ManageDoctors";
 import ManageTherapies from "../Pages/dashboard/admin/ManageTherapies";
-import CreateSlot from "../Pages/dashboard/admin/CreateSlot";
 import AllAppointments from "../Pages/dashboard/receptionist/AllAppointments";
 import DoctorAppointments from "../Pages/dashboard/doctor/DoctorAppointments";
 import AddFindings from "../Pages/dashboard/doctor/AddFindings";
@@ -70,14 +69,7 @@ function AppRoutes() {
           }
         />
 
-           <Route
-          path="/admin/slots"
-          element={
-            <ProtectedRoute roles={["Admin"]}>
-              <CreateSlot />
-            </ProtectedRoute>
-          }
-        />
+        
 
         <Route
           path="/doctor"
