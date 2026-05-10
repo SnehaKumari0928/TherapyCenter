@@ -14,6 +14,8 @@ const Reports = () => {
     try {
       const res = await getMyReports();
       setReports(res.data);
+      console.log(res.data);
+      
     } catch (err) {
       console.error("Error fetching reports:", err);
     } finally {

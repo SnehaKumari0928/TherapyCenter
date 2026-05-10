@@ -15,10 +15,16 @@ namespace TherapyCenter2.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<Appointment> AddAsync(Appointment appointment)
+        public async Task<Appointment> AddAsync(
+      Appointment appointment)
         {
             _context.Appointments.Add(appointment);
+
             await _context.SaveChangesAsync();
+
+            await _context.Entry(appointment)
+                .ReloadAsync();
+
             return appointment;
         }
         public async Task<List<Appointment>> GetByPatientIdAsync(int patientid)

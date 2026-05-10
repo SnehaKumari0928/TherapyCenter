@@ -27,7 +27,7 @@ const ManageDoctors = () => {
   const loadDoctors = async () => {
     try {
       const res = await getDoctors();
-      setDoctors(res.data.filter((u) => u.role === "Doctor"));
+      setDoctors(res.data);
     } catch (err) {
       console.error("Error loading doctors:", err);
     }
@@ -69,130 +69,199 @@ const ManageDoctors = () => {
     }
   };
 
-  return (
-    <DashboardLayout>
-      <h3 className="text-emerald mb-4">Manage Doctors</h3>
+ return (
+  <DashboardLayout>
+    <h3 className="text-emerald mb-4">
+      Manage Doctors
+    </h3>
 
-      <div className="row">
-        {/* CREATE DOCTOR */}
-        <div className="col-md-4">
-          <div className="card-dark p-3">
-            <h5 className="text-emerald mb-3">Add Doctor</h5>
+    {/* CREATE DOCTOR FORM */}
+    <div className="card-dark p-4 mb-4">
+      <h5 className="text-emerald mb-3">
+        Add Doctor
+      </h5>
 
-            <form onSubmit={handleSubmit}>
-              <input
-                className="form-control mb-2"
-                placeholder="First Name"
-                value={form.firstName}
-                onChange={(e) =>
-                  setForm({ ...form, firstName: e.target.value })
-                }
-                required
-              />
+      <form onSubmit={handleSubmit}>
+        <div className="row">
+          <div className="col-md-6">
+            <input
+              className="form-control mb-3"
+              placeholder="First Name"
+              value={form.firstName}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  firstName: e.target.value
+                })
+              }
+              required
+            />
+          </div>
 
-              <input
-                className="form-control mb-2"
-                placeholder="Last Name"
-                value={form.lastName}
-                onChange={(e) =>
-                  setForm({ ...form, lastName: e.target.value })
-                }
-                required
-              />
+          <div className="col-md-6">
+            <input
+              className="form-control mb-3"
+              placeholder="Last Name"
+              value={form.lastName}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  lastName: e.target.value
+                })
+              }
+              required
+            />
+          </div>
 
-              <input
-                className="form-control mb-2"
-                placeholder="Email"
-                value={form.email}
-                onChange={(e) =>
-                  setForm({ ...form, email: e.target.value })
-                }
-                required
-              />
+          <div className="col-md-6">
+            <input
+              className="form-control mb-3"
+              placeholder="Email"
+              value={form.email}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  email: e.target.value
+                })
+              }
+              required
+            />
+          </div>
 
-              <input
-                type="password"
-                className="form-control mb-2"
-                placeholder="Password"
-                value={form.password}
-                onChange={(e) =>
-                  setForm({ ...form, password: e.target.value })
-                }
-                required
-              />
+          <div className="col-md-6">
+            <input
+              type="password"
+              className="form-control mb-3"
+              placeholder="Password"
+              value={form.password}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  password: e.target.value
+                })
+              }
+              required
+            />
+          </div>
 
-              <input
-                className="form-control mb-2"
-                placeholder="Phone Number"
-                value={form.phoneNumber}
-                onChange={(e) =>
-                  setForm({ ...form, phoneNumber: e.target.value })
-                }
-              />
+          <div className="col-md-6">
+            <input
+              className="form-control mb-3"
+              placeholder="Phone Number"
+              value={form.phoneNumber}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  phoneNumber: e.target.value
+                })
+              }
+            />
+          </div>
 
-              <input
-                className="form-control mb-2"
-                placeholder="Specialization"
-                value={form.specialization}
-                onChange={(e) =>
-                  setForm({ ...form, specialization: e.target.value })
-                }
-                required
-              />
+          <div className="col-md-6">
+            <input
+              className="form-control mb-3"
+              placeholder="Specialization"
+              value={form.specialization}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  specialization: e.target.value
+                })
+              }
+              required
+            />
+          </div>
 
-              <input
-                type="time"
-                className="form-control mb-2"
-                value={form.startTime}
-                onChange={(e) =>
-                  setForm({ ...form, startTime: e.target.value })
-                }
-                required
-              />
+          <div className="col-md-6">
+            <label className="mb-1">
+              Start Time
+            </label>
 
-              <input
-                type="time"
-                className="form-control mb-3"
-                value={form.endTime}
-                onChange={(e) =>
-                  setForm({ ...form, endTime: e.target.value })
-                }
-                required
-              />
+            <input
+              type="time"
+              className="form-control mb-3"
+              value={form.startTime}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  startTime: e.target.value
+                })
+              }
+              required
+            />
+          </div>
 
-              <button className="btn btn-emerald w-100">
-                Create Doctor
-              </button>
-            </form>
+          <div className="col-md-6">
+            <label className="mb-1">
+              End Time
+            </label>
+
+            <input
+              type="time"
+              className="form-control mb-3"
+              value={form.endTime}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  endTime: e.target.value
+                })
+              }
+              required
+            />
           </div>
         </div>
 
-        {/* DOCTOR LIST */}
-        <div className="col-md-8">
-          <div className="row">
-            {doctors.map((d) => (
-              <div key={d.userId} className="col-md-6 mb-3">
-                <div className="card-dark p-3">
-                  <h5 className="text-emerald">
-                    {d.firstName} {d.lastName}
-                  </h5>
+        <button className="btn btn-emerald w-100">
+          Create Doctor
+        </button>
+      </form>
+    </div>
 
-                  <p className="text-muted small">{d.email}</p>
+    {/* ALL DOCTORS LIST */}
+    <div className="card-dark p-4">
+      <h5 className="text-emerald mb-4">
+        All Doctors
+      </h5>
 
-                  <button
-                    className="btn btn-danger btn-sm mt-2"
-                    onClick={() => handleDelete(d.userId)}
-                  >
-                    Delete
-                  </button>
-                </div>
+      {doctors.length === 0 ? (
+        <p>No doctors found</p>
+      ) : (
+        doctors.map((d) => (
+          <div
+            key={d.userId}
+            className="border-bottom pb-3 mb-3"
+          >
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <h5 className="text-emerald mb-1">
+                  Dr. {d.fullName}
+                </h5>
+
+                <p className="mb-1 text-muted">
+                  {d.email}
+                </p>
+
+                <small>
+                  {d.specialization}
+                </small>
               </div>
-            ))}
+
+              <button
+                className="btn btn-emerald btn-sm"
+                onClick={() =>
+                  handleDelete(d.userId)
+                }
+              >
+                Delete
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
-    </DashboardLayout>
-  );
+        ))
+      )}
+    </div>
+  </DashboardLayout>
+);
 };
 
 export default ManageDoctors;

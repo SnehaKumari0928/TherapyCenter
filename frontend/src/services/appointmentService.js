@@ -32,7 +32,6 @@ export const completeAppointment = (id)=>{
 }
 
 export const getDoctorAppointment = ()=>{
-    console.log("DOCTOR ENDPOINT HIT");
     return API.get("/appointment/doctor")
 }
 

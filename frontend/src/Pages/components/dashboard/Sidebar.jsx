@@ -17,7 +17,7 @@ const Sidebar = () => {
 
     <div
 
-      className="p-3 vh-100"
+      className="p-3 vh-200"
 
       style={{ width: "240px", borderRight: "1px solid #111" }}
 
@@ -39,10 +39,7 @@ const Sidebar = () => {
           <NavLink className="nav-item" to="/admin/doctors">Manage Doctors</NavLink>
 
           <NavLink className="nav-item" to="/admin/therapies">Manage Therapies</NavLink>
-          <NavLink className="nav-item" to="/admin/patients">Patients</NavLink>
-          <NavLink className="nav-item" to="/admin/appointments">Appointments</NavLink>
 
-          <NavLink className="nav-item" to="/admin/reports">Reports</NavLink>
 
 
 
@@ -82,7 +79,6 @@ const Sidebar = () => {
           <NavLink className="nav-item" to="/receptionist/book">Book Appointment</NavLink>
 
           <NavLink className="nav-item" to="/receptionist/appointments">All Appointments</NavLink>
-          <NavLink className="nav-item" to="/receptionist/available_doctors">Available Doctors</NavLink>
 
         </>
 

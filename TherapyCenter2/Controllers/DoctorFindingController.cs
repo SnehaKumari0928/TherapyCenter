@@ -70,5 +70,12 @@ namespace TherapyCenter2.Controllers
             await _service.DeleteAsync(id);
             return Ok(new { message = "Deleted successfully" });
         }
+
+        //[Authorize(Roles = "Guardian,Patient")]
+        //[HttpGet("my-report")]
+        //public async Task<IActionResult> GetMyReports()
+        //{
+        //    var list = await _service.GetByPatientIdAsync()
+        //}
     }
     }

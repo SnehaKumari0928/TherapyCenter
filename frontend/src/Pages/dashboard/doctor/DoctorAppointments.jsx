@@ -18,39 +18,65 @@ const DoctorAppointments = () => {
     loadAppointments();
   }, []);
 
-  const loadAppointments = async () => {
-    try {
-      setLoading(true);
+ const loadAppointments = async () => {
+  try {
+    setLoading(true);
 
-      const res = await getDoctorAppointment();
-      const data = res.data || [];
+    const res =
+      await getDoctorAppointment();
 
-      setAppointments(data);
+    const data =
+      res.data || [];
 
-      // Fetch findings for each appointment
-      const promises = data.map((a) =>
-        getByAppointmentId(a.appointmentId)
-          .then((f) => ({ id: a.appointmentId, data: f.data }))
-          .catch(() => null)
+    setAppointments(data);
+
+    // Fetch findings
+    const promises = data.map(
+      async (a) => {
+        try {
+          const res =
+            await getByAppointmentId(
+              a.appointmentId
+            );
+
+          return {
+            id: a.appointmentId,
+            data: res.data,
+          };
+        } catch {
+          return null;
+        }
+      }
+    );
+
+    const results =
+      await Promise.all(
+        promises
       );
 
-      const results = await Promise.all(promises);
+    const map = {};
 
-      const map = {};
-      results.forEach((r) => {
-        if (r && r.data) {
-          map[r.id] = r.data;
-        }
-      });
+    results.forEach((r) => {
+      // finding exists
+      if (r?.data) {
+        map[r.id] = r.data;
+      }
+    });
 
-      setFindingsMap(map);
-    } catch (err) {
-      console.error("Error loading appointments:", err);
-      alert("Failed to load appointments");
-    } finally {
-      setLoading(false);
-    }
-  };
+    setFindingsMap(map);
+  } catch (err) {
+    console.error(
+      "Error loading appointments:",
+      err
+    );
+
+    alert(
+      "Failed to load appointments"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleComplete = async (id) => {
     try {
@@ -63,6 +89,10 @@ const DoctorAppointments = () => {
   };
 
   const handleNavigateToFinding = (appointment) => {
+
+    console.log(appointment);
+    
+    
     navigate(`/doctor/findings/${appointment.appointmentId}`, {
       state: { appointment },
     });

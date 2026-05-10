@@ -42,7 +42,7 @@ const MyAppointments = () => {
                 <td>
                   {a.status === "Scheduled" && (
                     <button
-                      className="btn btn-danger btn-sm"
+                      className="btn btn-emerald btn-sm"
                       onClick={() => cancelAppointment(a.appointmentId)}
                     >
                       Cancel

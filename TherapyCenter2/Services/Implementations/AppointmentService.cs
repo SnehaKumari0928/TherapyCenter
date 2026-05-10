@@ -63,6 +63,14 @@ namespace TherapyCenter2.Services.Implementations
         public async Task<List<AppointmentResponseDto>> GetAllAsync()
         {
             var list = await _appointmentRepository.GetAllAsync();
+
+
+            foreach (var a in list)
+            {
+                Console.WriteLine(
+                    $"Id: {a.AppointmentId}, ReceptionistId: {a.ReceptionistId}"
+                );
+            }
             return list.Select(MapAppointmentResponse).ToList();
         }
 
@@ -138,6 +146,7 @@ namespace TherapyCenter2.Services.Implementations
                 DoctorId = a.DoctorId,
                 TherapyId = a.TherapyId,
                 AppointmentDate = a.AppointmentDate,
+                ReceptionistId = a.ReceptionistId,
                 StartTime = a.StartTime,
                 EndTime = a.EndTime,
                 Status = a.Status,
@@ -173,6 +182,11 @@ namespace TherapyCenter2.Services.Implementations
 
             if (slot == null)
                 throw new Exception("Slot not found");
+
+            Console.WriteLine($"Slot Id: {slot.SlotId}");
+            Console.WriteLine($"Date: {slot.Date}");
+            Console.WriteLine($"Start: {slot.StartTime}");
+            Console.WriteLine($"End: {slot.EndTime}");
 
             // CHECK IF SLOT ALREADY BOOKED
             if (slot.IsBooked)

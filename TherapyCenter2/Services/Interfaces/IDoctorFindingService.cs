@@ -8,9 +8,10 @@ namespace TherapyCenter2.Services.Interfaces
         Task<DoctorFindingResponseDto> CreateAsync(CreateDoctorFindingDto dto);
         Task<List<DoctorFindingResponseDto>> GetAllAsync();
         Task<DoctorFindingResponseDto> GetByIdAsync(int id);
-        Task<List<DoctorFindingResponseDto>> GetByAppointmentAsync(int appointmentId);
+        Task<DoctorFindingResponseDto> GetByAppointmentAsync(int appointmentId);
         Task<DoctorFindingResponseDto> UpdateAsync(int id, UpdateDoctorFindingDto dto);
         Task DeleteAsync(int id);
+        Task<List<DoctorFindingResponseDto>> GetMyReportsAsync();
 
         Task<List<DoctorFindingResponseDto>> GetByPatientIdAsync(int patientId);
     }

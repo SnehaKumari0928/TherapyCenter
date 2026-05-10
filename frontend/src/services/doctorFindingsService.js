@@ -2,7 +2,7 @@
 import API from "./api";
 
 export const createDoctorFinding = (data)=>{
-    return API.post("/doctorfinding/create_finding",data);
+    return API.post("/doctorfinding",data);
 }
 
 export const getDoctorFindigs = ()=>{

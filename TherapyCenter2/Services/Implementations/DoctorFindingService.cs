@@ -1,4 +1,5 @@
-﻿using TherapyCenter2.DTOs.DoctorFinding;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using TherapyCenter2.DTOs.DoctorFinding;
 using TherapyCenter2.Models;
 using TherapyCenter2.Repositories.Interfaces;
 using TherapyCenter2.Services.Interfaces;
@@ -47,10 +48,11 @@ namespace TherapyCenter2.Services.Implementations
             return MapDoctorFindingResponse(finding);
         }
 
-        public async Task<List<DoctorFindingResponseDto>> GetByAppointmentAsync(int appointmentId)
+        public async Task<DoctorFindingResponseDto> GetByAppointmentAsync(int appointmentId)
         {
             var list = await _repository.GetByAppointmentIdAsync(appointmentId);
-            return list.Select(MapDoctorFindingResponse).ToList();
+            if (list == null) throw new Exception("Not found");
+            return MapDoctorFindingResponse(list);
         }
 
         public async Task<DoctorFindingResponseDto> UpdateAsync(int id, UpdateDoctorFindingDto dto)
@@ -85,6 +87,8 @@ namespace TherapyCenter2.Services.Implementations
 
             return list.Select(MapDoctorFindingResponse).ToList();
         }
+
+
 
         private static DoctorFindingResponseDto MapDoctorFindingResponse(DoctorFinding f)
         {

@@ -30,9 +30,9 @@ namespace TherapyCenter2.Data
                 .HasForeignKey<Doctor>(d => d.UserId);
 
             modelBuilder.Entity<Patient>()
-                .HasOne(p => p.User)
+                .HasOne(p => p.Guardian)
                 .WithMany(u => u.Patients)
-                .HasForeignKey(p => p.UserId)
+                .HasForeignKey(p => p.GuardianId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Appointment>()
@@ -40,6 +40,10 @@ namespace TherapyCenter2.Data
                 .WithMany(u => u.AppointmentsBooked)
                 .HasForeignKey(a => a.ReceptionistId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
+           
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Payment>()
                 .HasOne(p => p.Appointment)

@@ -20,7 +20,7 @@ namespace TherapyCenter2.Repositories.Implementations
 
         public async Task<DoctorFinding> AddAsync(DoctorFinding finding)
         {
-            _context.DoctorFindings.Add(finding);
+            await _context.DoctorFindings.AddAsync(finding);
             await _context.SaveChangesAsync();
             return finding;
         }
@@ -46,11 +46,11 @@ namespace TherapyCenter2.Repositories.Implementations
         }
 
 
-        public async Task<List<DoctorFinding>> GetByAppointmentIdAsync(int appointmentId)
+        public async Task<DoctorFinding> GetByAppointmentIdAsync(int appointmentId)
         {
             return await _context.DoctorFindings
-                .Where(f => f.AppointmentId == appointmentId)
-                .ToListAsync();
+                .FirstOrDefaultAsync(f => f.AppointmentId == appointmentId);
+               
         }
 
         public async Task UpdateAsync(DoctorFinding finding)

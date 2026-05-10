@@ -82,7 +82,13 @@ const Users = () => {
 
       <h3 className="text-emerald mb-4">Manage Users</h3>
 
- 
+  <div className="d-flex justify-content-between align-items-center mb-3">
+          <button className="btn btn-emerald "
+          onClick={()=> setShowModal(true)}
+          >
+            + Create User
+          </button>
+        </div>
 
       <div className="card-dark p-4">
 
@@ -140,7 +146,7 @@ const Users = () => {
 
                   <button
 
-                    className="btn btn-danger"
+                    className="btn btn-emerald"
 
                     onClick={() => handleDelete(u.userId)}
 
@@ -285,13 +291,7 @@ const Users = () => {
       )}
 
 
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <button className="btn btn-emerald "
-          onClick={()=> setShowModal(true)}
-          >
-            + Create User
-          </button>
-        </div>
+       
     {showModal && (
   <div className="modal d-block" style={{ background: "#000000aa" }}>
     <div className="modal-dialog">

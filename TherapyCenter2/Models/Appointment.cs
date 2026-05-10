@@ -20,8 +20,8 @@ namespace TherapyCenter2.Models
 
         public int? ReceptionistId { get; set; }
 
-        [ForeignKey("ReceptionistId")]
-        public User Receptionist { get; set; }
+        [ForeignKey(nameof(ReceptionistId))]
+        public virtual User? Receptionist { get; set; }
 
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
