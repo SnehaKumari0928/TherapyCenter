@@ -51,7 +51,7 @@ namespace TherapyCenter2.Services.Implementations
             {
                 var patient = new Patient
                 {
-                    GuardianId = createdUser.UserId,               
+                    UserId = createdUser.UserId,               
                     FirstName = createdUser.FirstName,
                     LastName = createdUser.LastName,
                     CreatedAt = DateTime.Now

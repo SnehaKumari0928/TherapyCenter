@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using TherapyCenter2.Data;
 using TherapyCenter2.DTOs.DoctorFinding;
+using TherapyCenter2.Repositories.Interfaces;
 using TherapyCenter2.Services.Interfaces;
 
 namespace TherapyCenter2.Controllers
@@ -12,10 +15,13 @@ namespace TherapyCenter2.Controllers
     public class DoctorFindingController : ControllerBase
     {
         private readonly IDoctorFindingService _service;
+        private readonly AppDbContext _context;
 
-        public DoctorFindingController(IDoctorFindingService service)
+
+        public DoctorFindingController(IDoctorFindingService service, AppDbContext context)
         {
             _service = service;
+            _context = context;
         }
 
         [Authorize(Roles = "Doctor")]
@@ -71,11 +77,26 @@ namespace TherapyCenter2.Controllers
             return Ok(new { message = "Deleted successfully" });
         }
 
-        //[Authorize(Roles = "Guardian,Patient")]
-        //[HttpGet("my-report")]
-        //public async Task<IActionResult> GetMyReports()
-        //{
-        //    var list = await _service.GetByPatientIdAsync()
-        //}
+        [Authorize(Roles = "Guardian,Patient")]
+        [HttpGet("my-report")]
+        public async Task<IActionResult> GetMyReports()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+                throw new Exception("Invalid token");
+
+            int userId = int.Parse(userIdClaim);
+
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+
+            if (patient == null)
+                throw new Exception("Patient not found");
+
+            var result = await _service.GetByPatientIdAsync(patient.PatientId);
+
+            return Ok(result);
+
+        }
     }
     }

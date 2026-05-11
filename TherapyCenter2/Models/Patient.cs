@@ -8,10 +8,10 @@ namespace TherapyCenter2.Models
         {
             public int PatientId { get; set; }
 
-        public int GuardianId { get; set; }
+        public int UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public User Guardian { get; set; }
+        public User User { get; set; }
 
         [Required]
             [MaxLength(50)]

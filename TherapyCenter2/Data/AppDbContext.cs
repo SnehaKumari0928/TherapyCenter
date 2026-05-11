@@ -30,9 +30,9 @@ namespace TherapyCenter2.Data
                 .HasForeignKey<Doctor>(d => d.UserId);
 
             modelBuilder.Entity<Patient>()
-                .HasOne(p => p.Guardian)
+                .HasOne(p => p.User)
                 .WithMany(u => u.Patients)
-                .HasForeignKey(p => p.GuardianId)
+                .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Appointment>()

@@ -37,7 +37,7 @@ namespace TherapyCenter2.Controllers
                 User.FindFirst(ClaimTypes.NameIdentifier).Value
             );
 
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.GuardianId == userId);
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
 
            var  PatientId = patient.PatientId; 
             var result = await _appointmentService.CreateAsync(dto, PatientId);
@@ -65,7 +65,7 @@ namespace TherapyCenter2.Controllers
             int userId = int.Parse(userIdClaim);
 
             var patient = await _context.Patients
-                .FirstOrDefaultAsync(p => p.GuardianId == userId);
+                .FirstOrDefaultAsync(p => p.UserId == userId);
 
             if (patient == null)
                 return BadRequest("Patient not found");
