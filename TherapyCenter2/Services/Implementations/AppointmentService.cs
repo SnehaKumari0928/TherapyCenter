@@ -177,7 +177,6 @@ namespace TherapyCenter2.Services.Implementations
 
         public async Task<AppointmentResponseDto> CreateWalkInAsync(WalkInAppointmentDto dto)
         {
-            // GET SLOT
             var slot = await _slotRepository.GetByIdAsync(dto.SlotId);
 
             if (slot == null)
@@ -188,11 +187,9 @@ namespace TherapyCenter2.Services.Implementations
             Console.WriteLine($"Start: {slot.StartTime}");
             Console.WriteLine($"End: {slot.EndTime}");
 
-            // CHECK IF SLOT ALREADY BOOKED
             if (slot.IsBooked)
                 throw new Exception("Slot already booked");
 
-            // CREATE PATIENT
             var patient = new Patient
             {
                 FirstName = dto.FirstName,
@@ -202,7 +199,6 @@ namespace TherapyCenter2.Services.Implementations
 
             await _patientRepository.AddAsync(patient);
 
-            // GET RECEPTIONIST ID FROM TOKEN
             var userIdClaim = _httpContextAccessor.HttpContext?
                 .User
                 .FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -212,7 +208,6 @@ namespace TherapyCenter2.Services.Implementations
 
             int receptionistId = int.Parse(userIdClaim);
 
-            // CREATE APPOINTMENT USING SLOT DATA
             var appointment = new Appointment
             {
                 PatientId = patient.PatientId,
@@ -230,7 +225,6 @@ namespace TherapyCenter2.Services.Implementations
 
             var created = await _appointmentRepository.AddAsync(appointment);
 
-            // MARK SLOT AS BOOKED
             slot.IsBooked = true;
 
             await _slotRepository.UpdateAsync(slot);

@@ -12,8 +12,8 @@ using TherapyCenter2.Data;
 namespace TherapyCenter2.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260505081336_recent-migration")]
-    partial class recentmigration
+    [Migration("20260512115423_doctor-findings")]
+    partial class doctorfindings
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,12 @@ namespace TherapyCenter2.Migrations
 
                     b.Property<TimeOnly>("EndTime")
                         .HasColumnType("time(6)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Notes")
                         .HasColumnType("longtext");

@@ -54,11 +54,9 @@ namespace TherapyCenter2.Services.Implementations
             if (dto.StartTime >= dto.EndTime)
                 throw new ArgumentException("StartTime must be less than EndTime");
 
-            // 1️⃣ Fetch all existing slots in ONE DB call
             var existingSlots = await _slotRepository
                 .GetByDoctorAndDateAsync(doctorId, dto.Date);
 
-            // Convert to fast lookup set (for O(1) checks)
             var existingSet = existingSlots
                 .Select(s => (s.StartTime, s.EndTime))
                 .ToHashSet();
@@ -67,7 +65,6 @@ namespace TherapyCenter2.Services.Implementations
 
             var current = dto.StartTime;
 
-            // 2️⃣ Generate slots in memory
             while (current < dto.EndTime)
             {
                 var next = current.AddMinutes(dto.DurationMinutes);
@@ -75,7 +72,6 @@ namespace TherapyCenter2.Services.Implementations
                 if (next > dto.EndTime)
                     break;
 
-                // 3️⃣ Skip duplicates in memory (NO DB CALL)
                 if (!existingSet.Contains((current, next)))
                 {
                     newSlots.Add(new Slot
@@ -91,7 +87,6 @@ namespace TherapyCenter2.Services.Implementations
                 current = next;
             }
 
-            // 4️⃣ Bulk insert in ONE DB call
             if (newSlots.Any())
             {
                 await _slotRepository.BulkInsertAsync(newSlots);

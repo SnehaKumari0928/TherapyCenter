@@ -95,7 +95,7 @@ namespace TherapyCenter2.Migrations
                 {
                     PatientId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    GuardianId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     FirstName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LastName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
@@ -111,8 +111,8 @@ namespace TherapyCenter2.Migrations
                 {
                     table.PrimaryKey("PK_Patients", x => x.PatientId);
                     table.ForeignKey(
-                        name: "FK_Patients_Users_GuardianId",
-                        column: x => x.GuardianId,
+                        name: "FK_Patients_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
@@ -153,6 +153,10 @@ namespace TherapyCenter2.Migrations
                     DoctorId = table.Column<int>(type: "int", nullable: false),
                     TherapyId = table.Column<int>(type: "int", nullable: false),
                     ReceptionistId = table.Column<int>(type: "int", nullable: true),
+                    FirstName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     AppointmentDate = table.Column<DateOnly>(type: "date", nullable: false),
                     StartTime = table.Column<TimeOnly>(type: "time(6)", nullable: false),
                     EndTime = table.Column<TimeOnly>(type: "time(6)", nullable: false),
@@ -233,6 +237,8 @@ namespace TherapyCenter2.Migrations
                     Status = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PaidAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    StripePaymentIntentId = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
@@ -280,9 +286,9 @@ namespace TherapyCenter2.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Patients_GuardianId",
+                name: "IX_Patients_UserId",
                 table: "Patients",
-                column: "GuardianId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_AppointmentId",
