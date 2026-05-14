@@ -33,7 +33,8 @@ namespace TherapyCenter2.Data
                 .HasOne(p => p.User)
                 .WithMany(u => u.Patients)
                 .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired(false);
 
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Receptionist)
