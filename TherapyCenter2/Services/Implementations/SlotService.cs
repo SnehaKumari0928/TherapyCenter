@@ -46,33 +46,55 @@ namespace TherapyCenter2.Services.Implementations
 
             return MapSlotResponse(created);
         }
-        public async Task CreateBulkSlotsAsync(CreateBulkSlotDto dto, int doctorId)
+        public async Task CreateBulkSlotsAsync(
+      CreateBulkSlotDto dto,
+      int doctorId)
         {
+            if (dto.Date.DayOfWeek ==
+                DayOfWeek.Saturday ||
+
+                dto.Date.DayOfWeek ==
+                DayOfWeek.Sunday)
+            {
+                throw new Exception(
+                    "Doctor is not available on Saturday and Sunday");
+            }
+
             if (dto.DurationMinutes <= 0)
-                throw new ArgumentException("Duration must be greater than 0");
+                throw new ArgumentException(
+                    "Duration must be greater than 0");
 
             if (dto.StartTime >= dto.EndTime)
-                throw new ArgumentException("StartTime must be less than EndTime");
+                throw new ArgumentException(
+                    "StartTime must be less than EndTime");
 
             var existingSlots = await _slotRepository
-                .GetByDoctorAndDateAsync(doctorId, dto.Date);
+                .GetByDoctorAndDateAsync(
+                    doctorId,
+                    dto.Date);
 
             var existingSet = existingSlots
-                .Select(s => (s.StartTime, s.EndTime))
+                .Select(s => (
+                    s.StartTime,
+                    s.EndTime))
                 .ToHashSet();
 
-            var newSlots = new List<Slot>();
+            var newSlots =
+                new List<Slot>();
 
             var current = dto.StartTime;
 
             while (current < dto.EndTime)
             {
-                var next = current.AddMinutes(dto.DurationMinutes);
+                var next =
+                    current.AddMinutes(
+                        dto.DurationMinutes);
 
                 if (next > dto.EndTime)
                     break;
 
-                if (!existingSet.Contains((current, next)))
+                if (!existingSet.Contains(
+                    (current, next)))
                 {
                     newSlots.Add(new Slot
                     {
@@ -89,7 +111,8 @@ namespace TherapyCenter2.Services.Implementations
 
             if (newSlots.Any())
             {
-                await _slotRepository.BulkInsertAsync(newSlots);
+                await _slotRepository
+                    .BulkInsertAsync(newSlots);
             }
         }
         public async Task<List<SlotResponseDto>> GetAllSlotsAsync()
@@ -213,9 +236,21 @@ namespace TherapyCenter2.Services.Implementations
             return slots;
         }
 
-        private bool IsDoctorAvailableOnDate(string availableDays, DateOnly date)
+        private bool IsDoctorAvailableOnDate(
+      string availableDays,
+      DateOnly date)
         {
             var day = date.DayOfWeek;
+
+            Console.WriteLine($"Date: {date}");
+            Console.WriteLine($"Day: {day}");
+
+            if (day == DayOfWeek.Saturday ||
+                day == DayOfWeek.Sunday)
+            {
+                Console.WriteLine("Weekend blocked");
+                return false;
+            }
 
             if (availableDays.Contains("-"))
             {
@@ -224,7 +259,8 @@ namespace TherapyCenter2.Services.Implementations
                 var start = ParseDay(parts[0]);
                 var end = ParseDay(parts[1]);
 
-                return day >= start && day <= end;
+                return day >= start &&
+                       day <= end;
             }
 
             return ParseDay(availableDays) == day;

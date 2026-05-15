@@ -1,5 +1,4 @@
 ﻿using Stripe;
-using Stripe.V2;
 using TherapyCenter.Helpers;
 using TherapyCenter2.DTOs.Payment;
 using TherapyCenter2.Helper;
