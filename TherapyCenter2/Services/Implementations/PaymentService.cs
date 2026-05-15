@@ -69,7 +69,7 @@ namespace TherapyCenter2.Services.Implementations
 
             var payment = await _paymentRepo.GetByStripeIdAsync(paymentIntentId);
 
-            if (intent.Status != "successed") return false;
+            if (intent.Status != "succeeded") return false;
 
             payment.Status = "Paid";
             payment.TransactionId = intent.Id;
