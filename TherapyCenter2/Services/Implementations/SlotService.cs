@@ -63,32 +63,21 @@ namespace TherapyCenter2.Services.Implementations
 
             return MapSlotResponse(created);
         }
-
-        public async Task CreateBulkSlotsAsync(
-            CreateBulkSlotDto dto)
+        public async Task CreateBulkSlotsAsync(CreateBulkSlotDto dto, int doctorId)
         {
-            var doctor =
-                await GetLoggedInDoctorAsync();
-
             if (dto.DurationMinutes <= 0)
-                throw new Exception(
-                    "Duration must be greater than 0");
+                throw new ArgumentException("Duration must be greater than 0");
 
             if (dto.StartTime >= dto.EndTime)
-                throw new Exception(
-                    "StartTime must be less than EndTime");
+                throw new ArgumentException("StartTime must be less than EndTime");
 
-            var existingSlots =
-                await _slotRepository
-                .GetByDoctorAndDateAsync(
-                    doctor.DoctorId,
-                    dto.Date);
+            // 1️⃣ Fetch all existing slots in ONE DB call
+            var existingSlots = await _slotRepository
+                .GetByDoctorAndDateAsync(doctorId, dto.Date);
 
-            var existingSet =
-                existingSlots
-                .Select(s => (
-                    s.StartTime,
-                    s.EndTime))
+            // Convert to fast lookup set (for O(1) checks)
+            var existingSet = existingSlots
+                .Select(s => (s.StartTime, s.EndTime))
                 .ToHashSet();
 
             var newSlots =
@@ -128,9 +117,7 @@ namespace TherapyCenter2.Services.Implementations
 
             if (newSlots.Any())
             {
-                await _slotRepository
-                    .BulkInsertAsync(
-                        newSlots);
+                await _slotRepository.BulkInsertAsync(newSlots);
             }
         }
 
@@ -325,53 +312,12 @@ namespace TherapyCenter2.Services.Implementations
             return slots;
         }
 
-        private async Task<Doctor>
-            GetLoggedInDoctorAsync()
-        {
-            var userIdClaim =
-                _httpContextAccessor
-                .HttpContext?
-                .User
-                .FindFirst(
-                    ClaimTypes
-                    .NameIdentifier)
-                ?.Value;
-
-            if (string.IsNullOrEmpty(
-                userIdClaim))
-            {
-                throw new Exception(
-                    "Invalid token");
-            }
-
-            int userId =
-                int.Parse(
-                    userIdClaim);
-
-            var doctor =
-                await _doctorRepository
-                .GetByUserIdAsync(
-                    userId);
-
-            if (doctor == null)
-            {
-                throw new Exception(
-                    "Doctor not found");
-            }
-
-            return doctor;
-        }
-
-        private bool IsDoctorAvailableOnDate(
-            string availableDays,
-            DateOnly date)
+        private bool IsDoctorAvailableOnDate(string availableDays, DateOnly date)
         {
             var day =
                 date.DayOfWeek;
 
-            if (
-                availableDays.Contains(
-                    "-"))
+            if (availableDays.Contains("-"))
             {
                 var parts =
                     availableDays
@@ -385,8 +331,7 @@ namespace TherapyCenter2.Services.Implementations
                     ParseDay(
                         parts[1]);
 
-                return day >= start
-                    && day <= end;
+                return day >= start && day <= end;
             }
 
             return ParseDay(

@@ -1,5 +1,4 @@
 ﻿using Stripe;
-using Stripe.V2;
 using TherapyCenter.Helpers;
 using TherapyCenter2.DTOs.Payment;
 using TherapyCenter2.Helper;
@@ -69,7 +68,7 @@ namespace TherapyCenter2.Services.Implementations
 
             var payment = await _paymentRepo.GetByStripeIdAsync(paymentIntentId);
 
-            if (intent.Status != "successed") return false;
+            if (intent.Status != "succeeded") return false;
 
             payment.Status = "Paid";
             payment.TransactionId = intent.Id;

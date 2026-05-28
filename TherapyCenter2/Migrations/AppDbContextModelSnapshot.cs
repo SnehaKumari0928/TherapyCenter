@@ -176,7 +176,7 @@ namespace TherapyCenter2.Migrations
                     b.Property<string>("MedicalHistory")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("PatientId");
@@ -391,8 +391,7 @@ namespace TherapyCenter2.Migrations
                     b.HasOne("TherapyCenter2.Models.User", "User")
                         .WithMany("Patients")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("User");
                 });

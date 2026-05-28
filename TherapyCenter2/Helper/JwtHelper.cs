@@ -35,7 +35,7 @@ namespace TherapyCenter2.Helper
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddHours(_jwtSettings.Expiry),
+                expires: DateTime.Now.AddHours(_jwtSettings.ExpiryHours),
                 signingCredentials: creds
             );
 

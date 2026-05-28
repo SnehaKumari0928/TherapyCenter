@@ -12,8 +12,8 @@ using TherapyCenter2.Data;
 namespace TherapyCenter2.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260507235050_actual-migration")]
-    partial class actualmigration
+    [Migration("20260511045457_initial-migration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -171,9 +171,6 @@ namespace TherapyCenter2.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("GuardianId")
-                        .HasColumnType("int");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -182,9 +179,12 @@ namespace TherapyCenter2.Migrations
                     b.Property<string>("MedicalHistory")
                         .HasColumnType("longtext");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("PatientId");
 
-                    b.HasIndex("GuardianId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Patients");
                 });
@@ -391,12 +391,13 @@ namespace TherapyCenter2.Migrations
 
             modelBuilder.Entity("TherapyCenter2.Models.Patient", b =>
                 {
-                    b.HasOne("TherapyCenter2.Models.User", "Guardian")
+                    b.HasOne("TherapyCenter2.Models.User", "User")
                         .WithMany("Patients")
-                        .HasForeignKey("GuardianId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.Navigation("Guardian");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TherapyCenter2.Models.Payment", b =>

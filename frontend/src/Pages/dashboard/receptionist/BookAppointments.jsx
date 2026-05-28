@@ -147,7 +147,8 @@ const BookAppointment = () => {
 
         notes: "Walk-in appointment",
       };
-
+       console.log(payload);
+       
       await API.post(
         "/appointment/walkin",
         payload

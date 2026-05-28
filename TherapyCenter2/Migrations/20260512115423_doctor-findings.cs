@@ -5,7 +5,7 @@
 namespace TherapyCenter2.Migrations
 {
     /// <inheritdoc />
-    public partial class latest_migration : Migration
+    public partial class doctorfindings : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
