@@ -15,13 +15,11 @@ namespace TherapyCenter2.Controllers
     public class DoctorFindingController : ControllerBase
     {
         private readonly IDoctorFindingService _service;
-        private readonly AppDbContext _context;
 
 
-        public DoctorFindingController(IDoctorFindingService service, AppDbContext context)
+        public DoctorFindingController(IDoctorFindingService service)
         {
             _service = service;
-            _context = context;
         }
 
         [Authorize(Roles = "Doctor")]
@@ -81,19 +79,9 @@ namespace TherapyCenter2.Controllers
         [HttpGet("my-report")]
         public async Task<IActionResult> GetMyReports()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+          
 
-            if (string.IsNullOrEmpty(userIdClaim))
-                throw new Exception("Invalid token");
-
-            int userId = int.Parse(userIdClaim);
-
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
-
-            if (patient == null)
-                throw new Exception("Patient not found");
-
-            var result = await _service.GetByPatientIdAsync(patient.PatientId);
+            var result = await _service.GetByPatientIdAsync();
 
             return Ok(result);
 

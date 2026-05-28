@@ -47,5 +47,11 @@ namespace TherapyCenter2.Repositories.Implementations
                 .ToListAsync();
         }
 
+        public async Task<Patient> GetByUserIdAsync(int userId)
+        {
+            return await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+        }
+
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using System.Security.Claims;
 using TherapyCenter2.DTOs.DoctorFinding;
 using TherapyCenter2.Models;
 using TherapyCenter2.Repositories.Interfaces;
@@ -10,10 +11,15 @@ namespace TherapyCenter2.Services.Implementations
     {
 
         private readonly IDoctorFindingRepository _repository;
+        private readonly IPatientRepository _patientRepository;
 
-        public DoctorFindingService(IDoctorFindingRepository repository)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public DoctorFindingService(IDoctorFindingRepository repository, IPatientRepository patientRepository, IHttpContextAccessor httpContextAccessor)
         {
             _repository = repository;
+            _patientRepository = patientRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<DoctorFindingResponseDto> CreateAsync(CreateDoctorFindingDto dto)
@@ -81,9 +87,30 @@ namespace TherapyCenter2.Services.Implementations
             await _repository.DeleteAsync(finding);
         }
 
-        public async Task<List<DoctorFindingResponseDto>> GetByPatientIdAsync(int patientId)
+        public async Task<List<DoctorFindingResponseDto>> GetByPatientIdAsync()
         {
-            var list = await _repository.GetByPatientIdAsync(patientId);
+
+            var userIdClaim =
+      _httpContextAccessor.HttpContext?
+      .User
+      .FindFirst(
+          ClaimTypes.NameIdentifier
+      )?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+                throw new Exception("Invalid token");
+
+            int userId = int.Parse(userIdClaim);
+
+            var patient =
+                await _patientRepository
+                .GetByUserIdAsync(userId);
+
+            if (patient == null)
+                throw new Exception(
+                    "Patient not found");
+        
+                    var list = await _repository.GetByPatientIdAsync(patient.PatientId);
 
             return list.Select(MapDoctorFindingResponse).ToList();
         }

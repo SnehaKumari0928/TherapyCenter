@@ -1,216 +1,346 @@
-﻿//using FluentAssertions;
-//using Moq;
-//using System;
-//using System.Collections.Generic;
-//using System.Text;
-//using TherapyCenter2.DTOs.Slot;
-//using TherapyCenter2.Models;
-//using TherapyCenter2.Repositories.Interfaces;
-//using TherapyCenter2.Services.Implementations;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using Moq;
+using System.Security.Claims;
+using TherapyCenter2.DTOs.Slot;
+using TherapyCenter2.Models;
+using TherapyCenter2.Repositories.Interfaces;
+using TherapyCenter2.Services.Implementations;
 
-//namespace TherapyCenter.Tests.Services
-//{
-//    public class SlotServiceTests
-//    {
-//        private readonly Mock<ISlotRepository> _slotRepoMock;
-//        private readonly SlotService _service;
+namespace TherapyCenter.Tests.Services
+{
+    public class SlotServiceTests
+    {
+        private readonly Mock<ISlotRepository>
+            _slotRepoMock;
 
-//        public SlotServiceTests()
-//        {
-//            _slotRepoMock = new Mock<ISlotRepository>();
-//            _service = new SlotService(_slotRepoMock.Object);
-//        }
+        private readonly Mock<IDoctorRepository>
+            _doctorRepoMock;
 
+        private readonly Mock<IAppointmentRepository>
+            _appointmentRepoMock;
 
-//        [Fact]
-//        public async Task CreateSlot_Should_Create_When_Valid()
-//        {
-//            var dto = new CreateSlotDto
-//            {
-//                DoctorId = 1,
-//                Date = DateOnly.FromDateTime(DateTime.Today),
-//                StartTime = new TimeOnly(10, 0),
-//                EndTime = new TimeOnly(11, 0)
-//            };
+        private readonly Mock<IHttpContextAccessor>
+            _httpContextAccessorMock;
 
-//            _slotRepoMock
-//                .Setup(x => x.GetByDoctorAndDateAsync(dto.DoctorId, dto.Date))
-//                .ReturnsAsync(new List<Slot>());
+        private readonly SlotService
+            _service;
 
-//            _slotRepoMock
-//                .Setup(x => x.AddAsync(It.IsAny<Slot>()))
-//                .ReturnsAsync((Slot s) => s);
+        public SlotServiceTests()
+        {
+            _slotRepoMock =
+                new Mock<ISlotRepository>();
 
-//            var result = await _service.CreateSlotAsync(dto);
+            _doctorRepoMock =
+                new Mock<IDoctorRepository>();
 
-//            result.Should().NotBeNull();
-//            result.DoctorId.Should().Be(dto.DoctorId);
-//        }
+            _appointmentRepoMock =
+                new Mock<IAppointmentRepository>();
 
-//        [Fact]
-//        public async Task CreateSlot_Should_Throw_When_Time_Invalid()
-//        {
-//            var dto = new CreateSlotDto
-//            {
-//                StartTime = new TimeOnly(11, 0),
-//                EndTime = new TimeOnly(10, 0)
-//            };
+            _httpContextAccessorMock =
+                new Mock<IHttpContextAccessor>();
 
-//            Func<Task> act = async () => await _service.CreateSlotAsync(dto);
+            SetupLoggedInDoctor();
 
-//            await act.Should().ThrowAsync<Exception>()
-//                .WithMessage("Invalid time");
-//        }
+            _service =
+                new SlotService(
+                    _slotRepoMock.Object,
+                    _doctorRepoMock.Object,
+                    _appointmentRepoMock.Object,
+                    _httpContextAccessorMock.Object);
+        }
 
-//        [Fact]
-//        public async Task CreateSlot_Should_Throw_When_Overlap()
-//        {
-//            var dto = new CreateSlotDto
-//            {
-//                DoctorId = 1,
-//                Date = DateOnly.FromDateTime(DateTime.Today),
-//                StartTime = new TimeOnly(10, 30),
-//                EndTime = new TimeOnly(11, 30)
-//            };
+        private void SetupLoggedInDoctor()
+        {
+            var claims =
+                new List<Claim>
+                {
+                    new Claim(
+                        ClaimTypes.NameIdentifier,
+                        "1")
+                };
 
-//            var existing = new List<Slot>
-//            {
-//                new Slot
-//                {
-//                    StartTime = new TimeOnly(10, 0),
-//                    EndTime = new TimeOnly(11, 0)
-//                }
-//            };
+            var identity =
+                new ClaimsIdentity(
+                    claims,
+                    "TestAuth");
 
-//            _slotRepoMock
-//                .Setup(x => x.GetByDoctorAndDateAsync(dto.DoctorId, dto.Date))
-//                .ReturnsAsync(existing);
+            var user =
+                new ClaimsPrincipal(
+                    identity);
 
-//            Func<Task> act = async () => await _service.CreateSlotAsync(dto);
+            var context =
+                new DefaultHttpContext
+                {
+                    User = user
+                };
 
-//            await act.Should().ThrowAsync<Exception>()
-//                .WithMessage("Slots are overlapped");
-//        }
+            _httpContextAccessorMock
+                .Setup(x => x.HttpContext)
+                .Returns(context);
 
+            _doctorRepoMock
+                .Setup(x =>
+                    x.GetByUserIdAsync(1))
+                .ReturnsAsync(
+                    new Doctor
+                    {
+                        DoctorId = 1,
+                        UserId = 1,
+                        AvailableDays =
+                            "Mon-Fri",
+                        StartTime =
+                            new TimeOnly(9, 0),
+                        EndTime =
+                            new TimeOnly(17, 0)
+                    });
+        }
 
-//        [Fact]
-//        public async Task GetAllSlots_Should_Return_List()
-//        {
-//            _slotRepoMock
-//                .Setup(x => x.GetAllAsync())
-//                .ReturnsAsync(new List<Slot> { new Slot(), new Slot() });
+        [Fact]
+        public async Task
+            CreateSlot_Should_Create_When_Valid()
+        {
+            var dto =
+                new CreateSlotDto
+                {
+                    Date =
+                        DateOnly
+                        .FromDateTime(
+                            DateTime.Today),
 
-//            var result = await _service.GetAllSlotsAsync();
+                    StartTime =
+                        new TimeOnly(
+                            10, 0),
 
-//            result.Should().HaveCount(2);
-//        }
+                    EndTime =
+                        new TimeOnly(
+                            11, 0)
+                };
 
-//        [Fact]
-//        public async Task GetSlotsByDoctor_Should_Return_List()
-//        {
-//            _slotRepoMock
-//                .Setup(x => x.GetByDoctorAndDateAsync(1, It.IsAny<DateOnly>()))
-//                .ReturnsAsync(new List<Slot> { new Slot() });
+            _slotRepoMock
+                .Setup(x =>
+                    x.GetByDoctorAndDateAsync(
+                        1,
+                        dto.Date))
+                .ReturnsAsync(
+                    new List<Slot>());
 
-//            var result = await _service.GetSlotsByDoctorAsync(1, DateOnly.FromDateTime(DateTime.Today));
+            _slotRepoMock
+                .Setup(x =>
+                    x.AddAsync(
+                        It.IsAny<Slot>()))
+                .ReturnsAsync(
+                    (Slot s) => s);
 
-//            result.Should().HaveCount(1);
-//        }
+            var result =
+                await _service
+                .CreateSlotAsync(dto);
 
-//        [Fact]
-//        public async Task GetSlotById_Should_Return_When_Exists()
-//        {
-//            _slotRepoMock
-//                .Setup(x => x.GetByIdAsync(1))
-//                .ReturnsAsync(new Slot { SlotId = 1 });
+            result.Should()
+                .NotBeNull();
 
-//            var result = await _service.GetSlotByIdAsync(1);
+            result.DoctorId
+                .Should().Be(1);
+        }
 
-//            result.SlotId.Should().Be(1);
-//        }
+        [Fact]
+        public async Task
+            CreateSlot_Should_Throw_When_Time_Invalid()
+        {
+            var dto =
+                new CreateSlotDto
+                {
+                    StartTime =
+                        new TimeOnly(
+                            11, 0),
 
-//        [Fact]
-//        public async Task GetSlotById_Should_Throw_When_Not_Found()
-//        {
-//            _slotRepoMock
-//                .Setup(x => x.GetByIdAsync(1))
-//                .ReturnsAsync((Slot?)null);
+                    EndTime =
+                        new TimeOnly(
+                            10, 0)
+                };
 
-//            Func<Task> act = async () => await _service.GetSlotByIdAsync(1);
+            Func<Task> act =
+                async () =>
+                    await _service
+                    .CreateSlotAsync(
+                        dto);
 
-//            await act.Should().ThrowAsync<Exception>()
-//                .WithMessage("Slot not found");
-//        }
+            await act.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage(
+                    "Invalid time");
+        }
 
+        [Fact]
+        public async Task
+            CreateSlot_Should_Throw_When_Overlap()
+        {
+            var dto =
+                new CreateSlotDto
+                {
+                    Date =
+                        DateOnly
+                        .FromDateTime(
+                            DateTime.Today),
 
-//        [Fact]
-//        public async Task UpdateSlot_Should_Update_When_Valid()
-//        {
-//            var slot = new Slot
-//            {
-//                SlotId = 1,
-//                DoctorId = 1
-//            };
+                    StartTime =
+                        new TimeOnly(
+                            10, 30),
 
-//            var dto = new UpdateSlotDto
-//            {
-//                Date = DateOnly.FromDateTime(DateTime.Today),
-//                StartTime = new TimeOnly(9, 0),
-//                EndTime = new TimeOnly(10, 0)
-//            };
+                    EndTime =
+                        new TimeOnly(
+                            11, 30)
+                };
 
-//            _slotRepoMock.Setup(x => x.GetByIdAsync(1)).ReturnsAsync(slot);
-//            _slotRepoMock.Setup(x => x.GetByDoctorAndDateAsync(slot.DoctorId, dto.Date))
-//                .ReturnsAsync(new List<Slot>());
-//            _slotRepoMock.Setup(x => x.UpdateAsync(slot))
-//                .Returns(Task.CompletedTask);
+            var existing =
+                new List<Slot>
+                {
+                    new Slot
+                    {
+                        StartTime =
+                            new TimeOnly(
+                                10, 0),
 
-//            var result = await _service.UpdateSlotAsync(1, dto);
+                        EndTime =
+                            new TimeOnly(
+                                11, 0)
+                    }
+                };
 
-//            result.StartTime.Should().Be(dto.StartTime);
-//        }
+            _slotRepoMock
+                .Setup(x =>
+                    x.GetByDoctorAndDateAsync(
+                        1,
+                        dto.Date))
+                .ReturnsAsync(
+                    existing);
 
-//        [Fact]
-//        public async Task UpdateSlot_Should_Throw_When_Not_Found()
-//        {
-//            _slotRepoMock.Setup(x => x.GetByIdAsync(1))
-//                .ReturnsAsync((Slot?)null);
+            Func<Task> act =
+                async () =>
+                    await _service
+                    .CreateSlotAsync(
+                        dto);
 
-//            var dto = new UpdateSlotDto();
+            await act.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage(
+                    "Slots are overlapped");
+        }
 
-//            Func<Task> act = async () => await _service.UpdateSlotAsync(1, dto);
+        [Fact]
+        public async Task
+            GetAllSlots_Should_Return_List()
+        {
+            _slotRepoMock
+                .Setup(x =>
+                    x.GetAllAsync())
+                .ReturnsAsync(
+                    new List<Slot>
+                    {
+                        new Slot(),
+                        new Slot()
+                    });
 
-//            await act.Should().ThrowAsync<Exception>()
-//                .WithMessage("Slot not found");
-//        }
+            var result =
+                await _service
+                .GetAllSlotsAsync();
 
+            result.Should()
+                .HaveCount(2);
+        }
 
-//        [Fact]
-//        public async Task DeleteSlot_Should_Delete_When_Exists()
-//        {
-//            var slot = new Slot { SlotId = 1 };
+        [Fact]
+        public async Task
+            GetSlotById_Should_Return_When_Exists()
+        {
+            _slotRepoMock
+                .Setup(x =>
+                    x.GetByIdAsync(1))
+                .ReturnsAsync(
+                    new Slot
+                    {
+                        SlotId = 1
+                    });
 
-//            _slotRepoMock.Setup(x => x.GetByIdAsync(1))
-//                .ReturnsAsync(slot);
+            var result =
+                await _service
+                .GetSlotByIdAsync(1);
 
-//            _slotRepoMock.Setup(x => x.DeleteAsync(slot))
-//                .Returns(Task.CompletedTask);
+            result.SlotId
+                .Should().Be(1);
+        }
 
-//            await _service.DeleteSlotAsync(1);
+        [Fact]
+        public async Task
+            GetSlotById_Should_Throw_When_Not_Found()
+        {
+            _slotRepoMock
+                .Setup(x =>
+                    x.GetByIdAsync(1))
+                .ReturnsAsync(
+                    (Slot?)null);
 
-//            _slotRepoMock.Verify(x => x.DeleteAsync(slot), Times.Once);
-//        }
+            Func<Task> act =
+                async () =>
+                    await _service
+                    .GetSlotByIdAsync(
+                        1);
 
-//        [Fact]
-//        public async Task DeleteSlot_Should_Throw_When_Not_Found()
-//        {
-//            _slotRepoMock.Setup(x => x.GetByIdAsync(1))
-//                .ReturnsAsync((Slot?)null);
+            await act.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage(
+                    "Slot not found");
+        }
 
-//            Func<Task> act = async () => await _service.DeleteSlotAsync(1);
+        [Fact]
+        public async Task
+            DeleteSlot_Should_Delete_When_Exists()
+        {
+            var slot =
+                new Slot
+                {
+                    SlotId = 1
+                };
 
-//            await act.Should().ThrowAsync<Exception>()
-//                .WithMessage("Slot not found");
-//        }
-//    }
-//}
+            _slotRepoMock
+                .Setup(x =>
+                    x.GetByIdAsync(1))
+                .ReturnsAsync(slot);
+
+            _slotRepoMock
+                .Setup(x =>
+                    x.DeleteAsync(slot))
+                .Returns(
+                    Task.CompletedTask);
+
+            await _service
+                .DeleteSlotAsync(1);
+
+            _slotRepoMock
+                .Verify(
+                    x => x.DeleteAsync(slot),
+                    Times.Once);
+        }
+
+        [Fact]
+        public async Task
+            DeleteSlot_Should_Throw_When_Not_Found()
+        {
+            _slotRepoMock
+                .Setup(x =>
+                    x.GetByIdAsync(1))
+                .ReturnsAsync(
+                    (Slot?)null);
+
+            Func<Task> act =
+                async () =>
+                    await _service
+                    .DeleteSlotAsync(1);
+
+            await act.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage(
+                    "Slot not found");
+        }
+    }
+}

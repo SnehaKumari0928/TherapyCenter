@@ -14,20 +14,22 @@ namespace TherapyCenter2.Services.Implementations
         private readonly IPatientRepository _patientRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ITherapyRepository _therapyRepository;
+        private readonly IDoctorRepository _doctorRepository;
 
         public AppointmentService(IAppointmentRepository appointmentRepository,
                                   ISlotRepository slotRepository, IPatientRepository patientRepository,
             IHttpContextAccessor httpContextAccessor,
-            ITherapyRepository therapyRepository)
+            ITherapyRepository therapyRepository, IDoctorRepository doctorRepository)
         {
             _appointmentRepository = appointmentRepository;
             _slotRepository = slotRepository;
              _patientRepository = patientRepository;
             _httpContextAccessor = httpContextAccessor;
             _therapyRepository = therapyRepository; 
+            _doctorRepository = doctorRepository;
         }
 
-        public async Task<AppointmentResponseDto> CreateAsync(AppointmentCreateDto dto, int patientId)
+        public async Task<AppointmentResponseDto> CreateAsync(AppointmentCreateDto dto)
         {
             var slot = await _slotRepository.GetByIdAsync(dto.SlotId);
 
@@ -37,9 +39,21 @@ namespace TherapyCenter2.Services.Implementations
             if (slot.IsBooked)
                 throw new Exception("Slot already booked");
 
+            var userIdClaim = _httpContextAccessor.HttpContext?
+               .User
+               .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+                throw new Exception("Invalid token");
+
+            int userId = int.Parse(userIdClaim);
+            var patient = await _patientRepository.GetByUserIdAsync(userId);
+            if (patient == null)
+                throw new Exception("Patient not found");
+
             var appointment = new Appointment
             {
-                PatientId = patientId,
+                PatientId = patient.PatientId,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 DoctorId = dto.DoctorId,
@@ -74,9 +88,22 @@ namespace TherapyCenter2.Services.Implementations
             return list.Select(MapAppointmentResponse).ToList();
         }
 
-        public async Task<List<AppointmentResponseDto>> GetByPatientIdAsync(int patientId)
+        public async Task<List<AppointmentResponseDto>> GetByPatientIdAsync()
         {
-            var list = await _appointmentRepository.GetByPatientIdAsync(patientId);
+
+            var userIdClaim = _httpContextAccessor.HttpContext?
+               .User
+               .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+                throw new Exception("Invalid token");
+
+            int userId = int.Parse(userIdClaim);
+            var patient = await _patientRepository.GetByUserIdAsync(userId);
+            if (patient == null)
+                throw new Exception("Patient not found");
+
+            var list = await _appointmentRepository.GetByPatientIdAsync(patient.PatientId);
             return list.Select(MapAppointmentResponse).ToList();
         }
         public async Task<AppointmentResponseDto> GetByIdAsync(int id)
@@ -154,9 +181,20 @@ namespace TherapyCenter2.Services.Implementations
             };
         }
 
-        public async Task<List<AppointmentResponseDto>> GetByDoctorIdAsync(int doctorId)
+        public async Task<List<AppointmentResponseDto>> GetByDoctorIdAsync()
         {
-            var list = await _appointmentRepository.GetByDoctorIdAsync(doctorId);
+            var userIdClaim = _httpContextAccessor.HttpContext?
+               .User
+               .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+                throw new Exception("Invalid token");
+
+            int userId = int.Parse(userIdClaim);
+            var doctor = await _doctorRepository.GetByUserIdAsync(userId);
+            if (doctor == null)
+                throw new Exception("Doctor not found");
+            var list = await _appointmentRepository.GetByDoctorIdAsync(doctor.DoctorId);
 
             return list.Select(a => new
              AppointmentResponseDto
@@ -177,7 +215,6 @@ namespace TherapyCenter2.Services.Implementations
 
         public async Task<AppointmentResponseDto> CreateWalkInAsync(WalkInAppointmentDto dto)
         {
-            // GET SLOT
             var slot = await _slotRepository.GetByIdAsync(dto.SlotId);
 
             if (slot == null)
@@ -188,11 +225,9 @@ namespace TherapyCenter2.Services.Implementations
             Console.WriteLine($"Start: {slot.StartTime}");
             Console.WriteLine($"End: {slot.EndTime}");
 
-            // CHECK IF SLOT ALREADY BOOKED
             if (slot.IsBooked)
                 throw new Exception("Slot already booked");
 
-            // CREATE PATIENT
             var patient = new Patient
             {
                 FirstName = dto.FirstName,
@@ -202,7 +237,6 @@ namespace TherapyCenter2.Services.Implementations
 
             await _patientRepository.AddAsync(patient);
 
-            // GET RECEPTIONIST ID FROM TOKEN
             var userIdClaim = _httpContextAccessor.HttpContext?
                 .User
                 .FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -212,7 +246,6 @@ namespace TherapyCenter2.Services.Implementations
 
             int receptionistId = int.Parse(userIdClaim);
 
-            // CREATE APPOINTMENT USING SLOT DATA
             var appointment = new Appointment
             {
                 PatientId = patient.PatientId,
@@ -230,7 +263,6 @@ namespace TherapyCenter2.Services.Implementations
 
             var created = await _appointmentRepository.AddAsync(appointment);
 
-            // MARK SLOT AS BOOKED
             slot.IsBooked = true;
 
             await _slotRepository.UpdateAsync(slot);

@@ -35,10 +35,9 @@ const BookAppointment = () => {
     setTherapies(therapyRes?.data || []);
   };
 
-  const fetchSlots = async (doctorId, date) => {
-    if (!doctorId || !date) return;
+  const fetchSlots = async ( date) => {
 
-    const res = await getSlotsByDoctor(doctorId, date);
+    const res = await getSlotsByDoctor(date);
     setSlots(res?.data?.filter((s) => !s.isBooked) || []);
   };
 

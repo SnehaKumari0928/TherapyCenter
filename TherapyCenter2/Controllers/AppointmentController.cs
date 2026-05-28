@@ -17,15 +17,11 @@ namespace TherapyCenter2.Controllers
     {
 
         private readonly IAppointmentService _appointmentService;
-        private readonly AppDbContext _context;
-        private readonly IDoctorRepository _doctorRepository;
-        private readonly IPatientRepository _patientRepository;
-        public AppointmentController(IAppointmentService appointmentService, AppDbContext context, IDoctorRepository doctorRepository, IPatientRepository patientRepository)
+      
+        public AppointmentController(IAppointmentService appointmentService)
         {
             _appointmentService = appointmentService;
-            _context = context;
-            _doctorRepository = doctorRepository;
-            _patientRepository = patientRepository;
+           
         }
 
 
@@ -33,14 +29,8 @@ namespace TherapyCenter2.Controllers
         [HttpPost("createappointment")]
         public async Task<IActionResult> Create([FromBody] AppointmentCreateDto dto)
         {
-            var userId = int.Parse(
-                User.FindFirst(ClaimTypes.NameIdentifier).Value
-            );
-
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
-
-           var  PatientId = patient.PatientId; 
-            var result = await _appointmentService.CreateAsync(dto, PatientId);
+           
+            var result = await _appointmentService.CreateAsync(dto);
             return Ok(result);
         }
 
@@ -57,20 +47,9 @@ namespace TherapyCenter2.Controllers
         [HttpGet("my")]
         public async Task<IActionResult> GetMyAppointments()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+           
 
-            if (userIdClaim == null)
-                return Unauthorized("Invalid token");
-
-            int userId = int.Parse(userIdClaim);
-
-            var patient = await _context.Patients
-                .FirstOrDefaultAsync(p => p.UserId == userId);
-
-            if (patient == null)
-                return BadRequest("Patient not found");
-
-            var result = await _appointmentService.GetByPatientIdAsync(patient.PatientId);
+            var result = await _appointmentService.GetByPatientIdAsync();
 
             return Ok(result);
         }
@@ -119,21 +98,10 @@ namespace TherapyCenter2.Controllers
         [HttpGet("doctor")]
         public async Task<IActionResult> GetDoctorAppointments()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            
 
-            if (userIdClaim == null)
-                return Unauthorized("Invalid token");
-
-            int userId = int.Parse(userIdClaim.Value);
-
-            var doctor = await _context.Doctors
-                .FirstOrDefaultAsync(d => d.UserId == userId);
-
-            if (doctor == null)
-                return BadRequest("Doctor not found");
-
-            var result = await _appointmentService.GetByDoctorIdAsync(doctor.DoctorId);
-            Console.WriteLine(doctor.DoctorId);
+            var result = await _appointmentService.GetByDoctorIdAsync();
+            Console.WriteLine();
 
             return Ok(result);
         }
